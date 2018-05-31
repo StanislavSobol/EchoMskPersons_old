@@ -26,6 +26,9 @@ android {
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
     }
+    sourceSets{
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 def support_version = "27.1.1"
@@ -93,6 +96,13 @@ dependencies {
 */
     // Test
     testImplementation 'junit:junit:4.12'
+
+    testImplementation 'org.mockito:mockito-core:2.8.0'
+    testImplementation 'org.powermock:powermock-api-mockito2:1.7.0RC2'
+    testImplementation 'org.powermock:powermock-module-junit4:1.7.0'
+    testImplementation 'org.powermock:powermock-core:1.7.0'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.0'
+
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

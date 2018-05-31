@@ -1,0 +1,18 @@
+[
+  {
+    "url":"/guests/813104-echo",
+    "firstName":"Александр",
+    "lastName":"Невзоров",
+    "profession":"публицист",
+    "info":"публицист всякого",
+    "photoUrl":""
+  },
+  {
+    "url":"/contributors/324",
+    "firstName":"Юлия",
+    "lastName":"Латынина",
+    "profession":"журнадист",
+    "info":"журналист Новой Газеты",
+    "photoUrl":""
+  }
+]
