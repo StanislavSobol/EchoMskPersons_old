@@ -13,10 +13,6 @@ class VipsListAdapter : RecyclerView.Adapter<VipsListAdapter.Holder>() {
 
     private val items = ArrayList<VipVM>()
 
-//    internal fun VipsActivityAdapter(activity: VipsActivity): ??? {
-//        this.activity = activity
-//    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater
                 .from(parent.context).inflate(R.layout.vip_item, parent, false))
@@ -30,19 +26,9 @@ class VipsListAdapter : RecyclerView.Adapter<VipsListAdapter.Holder>() {
         return items.size
     }
 
-    internal fun addOrUpdateItem(vipVM: VipVM) {
-        val index = items.indexOf(vipVM)
-        if (index == -1) {
-            items.add(vipVM)
-            notifyItemInserted(items.size - 1)
-        } else {
-            items[index] = vipVM
-            notifyItemChanged(index)
-        }
-    }
-
-    internal fun clearItems() {
+    internal fun addItems(vips: List<VipVM>) {
         items.clear()
+        items.addAll(vips)
         notifyDataSetChanged()
     }
 

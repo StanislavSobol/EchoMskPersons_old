@@ -6,7 +6,9 @@ data class VipVM(val url:String,
                  val info: String,
                  val photoUrl: String ) {
 
-//    fun fromEntity(entity:VipDTO):VipVM {
-//
-//    }
+    companion object {
+        fun fromEntity(entity: VipDTO): VipVM {
+            return VipVM(entity.url, entity.lastName, entity.profession, entity.info, entity.photoUrl)
+        }
+    }
 }

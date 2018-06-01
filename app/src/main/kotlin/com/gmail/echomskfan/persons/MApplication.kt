@@ -1,6 +1,7 @@
 package com.gmail.echomskfan.persons
 
 import android.app.Application
+import android.content.Context
 import com.gmail.echomskfan.persons.di.DaggerComponents
 import com.gmail.echomskfan.persons.di.DaggerDaggerComponents
 import com.gmail.echomskfan.persons.di.DaggerModules
@@ -21,5 +22,7 @@ class MApplication : Application() {
         fun getDaggerComponents(): DaggerComponents {
             return instance.dagger2Components
         }
+
+        fun getAppContext(): Context = instance.applicationContext
     }
 }

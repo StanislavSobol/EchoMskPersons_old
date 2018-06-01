@@ -10,6 +10,7 @@ import com.arellomobile.mvp.MvpFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.gmail.echomskfan.persons.R
+import com.gmail.echomskfan.persons.data.VipVM
 import kotlinx.android.synthetic.main.fragment_lessons_list.*
 
 class VipsFragment : MvpFragment(), IVipsView {
@@ -44,6 +45,10 @@ class VipsFragment : MvpFragment(), IVipsView {
 //        }
 //
 //        presenter.viewCreated()
+    }
+
+    override fun loadVips(vips: List<VipVM>) {
+        adapter.addItems(vips)
     }
 
     companion object {
