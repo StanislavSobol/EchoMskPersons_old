@@ -6,10 +6,6 @@ import java.util.*
 
 object StringUtils {
 
-    fun isEmpty(s: String?): Boolean {
-        return s == null || s.isEmpty()
-    }
-
     fun getFirstName(name: String): String {
         return getStringForIndex(name, 0)
     }
@@ -19,7 +15,7 @@ object StringUtils {
     }
 
     private fun getStringForIndex(name: String, index: Int): String {
-        if (isEmpty(name)) {
+        if (name.isEmpty()) {
             return ""
         }
 
@@ -28,7 +24,7 @@ object StringUtils {
 
         var i = 0
         for (arrS in arr) {
-            if (!isEmpty(arrS.trim { it <= ' ' })) {
+            if ((arrS.trim { it <= ' ' }).isEmpty()) {
                 if (index == i++) {
                     return arrS
                 }

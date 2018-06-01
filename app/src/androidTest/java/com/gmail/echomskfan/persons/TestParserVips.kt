@@ -42,9 +42,7 @@ class TestParserVips : AndroidTestCase() {
     fun testParserGetVips() {
         val vips = parser.getVips(appContext)
         assertEquals(2, vips.size)
-        for (vip in vips) {
-            Assert.assertTrue(vip.isValid())
-        }
+        vips.forEach { assertTrue(it.isValid()) }
     }
 
     @Test
