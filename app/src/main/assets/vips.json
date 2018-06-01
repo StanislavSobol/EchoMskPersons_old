@@ -5,14 +5,14 @@
     "lastName":"Невзоров",
     "profession":"публицист",
     "info":"публицист всякого",
-    "photoUrl":"http://somepic.png"
+    "photoUrl": "https://echo.msk.ru/files/avatar2/2771274.jpg"
   },
   {
     "url":"/contributors/324",
     "firstName":"Юлия",
     "lastName":"Латынина",
-    "profession":"журнадист",
-    "info":"журналист Новой Газеты",
-    "photoUrl":"http://somepic.png"
+    "profession": "обозреватель «Эха Москвы»",
+    "info": "Кандидат филологических наук, известный журналист и писатель. Обозреватель «Новой газеты». С 2003 года — постоянный автор и ведущая еженедельной программы «Код доступа».",
+    "photoUrl": "https://echo.msk.ru/files/avatar2/783858.jpg"
   }
 ]

@@ -1,15 +1,17 @@
 package com.gmail.echomskfan.persons.ui.vips
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.gmail.echomskfan.persons.R
 import com.gmail.echomskfan.persons.data.VipVM
+import com.gmail.echomskfan.persons.utils.PicassoFilteredLoader
 import kotlinx.android.synthetic.main.vip_item.view.*
 import java.util.*
 
-class VipsListAdapter : RecyclerView.Adapter<VipsListAdapter.Holder>() {
+class VipsListAdapter(val context: Context) : RecyclerView.Adapter<VipsListAdapter.Holder>() {
 
     private val items = ArrayList<VipVM>()
 
@@ -36,7 +38,7 @@ class VipsListAdapter : RecyclerView.Adapter<VipsListAdapter.Holder>() {
         fun setItem(vipVM: VipVM) {
             itemView.vip_item_name_text_view.text = vipVM.name
             itemView.vip_item_profession_text_view.text = vipVM.profession
-            //     PicassoFilteredLoader.load(activity, vipVM.getPhotoUrl(), imageView)
+            PicassoFilteredLoader.load(context, vipVM.photoUrl, itemView.vip_item_image_view)
             itemView.vip_item_ripple_layout.setOnClickListener { }
         }
     }

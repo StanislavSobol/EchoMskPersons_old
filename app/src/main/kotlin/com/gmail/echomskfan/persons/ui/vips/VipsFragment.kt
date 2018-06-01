@@ -21,7 +21,7 @@ class VipsFragment : MvpFragment(), IVipsView {
     @ProvidePresenter
     fun providePresenter() = VipsPresenter()
 
-    private var adapter: VipsListAdapter = VipsListAdapter()
+    private val adapter: VipsListAdapter by lazy { VipsListAdapter(activity) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_lessons_list, container, false)
@@ -29,6 +29,7 @@ class VipsFragment : MvpFragment(), IVipsView {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
         recyclerView.addItemDecoration(
