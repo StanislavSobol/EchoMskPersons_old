@@ -9,6 +9,9 @@ data class VipDTO(val url:String,
                   val info:String,
                   val photoUrl:String
                   )
+{
+    fun getFullUrl(pageNum:Int = 1) = "${IData.MAIN_URL}$url${IData.URL_ARCHIVE_PATH}/$pageNum.html"
+}
 
 data class ItemDTO(val fullTextURL:String,
                   val type:String, // Интервью

@@ -4,7 +4,9 @@ import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import android.test.AndroidTestCase
+import com.gmail.echomskfan.persons.data.VipDTO
 import com.gmail.echomskfan.persons.interactor.parser.Parser
+import junit.framework.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,14 +23,11 @@ class TestParserVips : AndroidTestCase() {
         appContext = InstrumentationRegistry.getTargetContext()
     }
 
-//    @Test
-//    fun useAppContext() {
-//        val appContext = InstrumentationRegistry.getTargetContext()
-////        val str = appContext.resources.getString(R.string.abc_action_bar_home_description)
-////        Assert.assertEquals("dsfsdfdsfdsf", str)
-//        appContext.resources.assets.open("vips.json")
-//        Assert.assertEquals("com.gmail.echomskfan.persons", appContext.packageName)
-//    }
+    @Test
+    fun testAppContext() {
+        val appContext = InstrumentationRegistry.getTargetContext()
+        assertEquals("com.gmail.echomskfan.persons", appContext.packageName)
+    }
 
     @Test
     fun testParserLoadJSONFromAsset() {
@@ -40,7 +39,30 @@ class TestParserVips : AndroidTestCase() {
     fun testParserGetVips() {
         val vips = parser.getVips(appContext)
         assertEquals(2, vips.size)
+        for (vip in vips) {
+            Assert.assertTrue(vip.isValid())
+        }
     }
 
+    @Test
+    fun testParserGetCastsForVips() {
+        val vips = parser.getVips(appContext)
+        for (vip in vips) {
+            Assert.assertTrue(vip.isValid())
 
+            val url = vip.getFullUrl()
+
+            val casts = parser.getCasts(vip.getFullUrl(), vip)
+            Assert.assertTrue(casts.isNotEmpty())
+            casts.forEach{ Assert.assertTrue(it.isValid())}
+        }
+    }
 }
+
+private fun VipDTO.isValid() = url.isNotEmpty() &&
+                firstName.isNotEmpty() &&
+                lastName.isNotEmpty() &&
+                profession.isNotEmpty() &&
+                info.isNotEmpty() &&
+                photoUrl.isNotEmpty()
+
