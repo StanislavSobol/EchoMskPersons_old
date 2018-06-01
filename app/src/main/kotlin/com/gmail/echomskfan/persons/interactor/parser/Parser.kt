@@ -3,11 +3,15 @@ package com.gmail.echomskfan.persons.interactor.parser
 import android.content.Context
 import android.support.annotation.VisibleForTesting
 import com.gmail.echomskfan.persons.data.ItemDTO
+import com.gmail.echomskfan.persons.data.PersonDTO
+import com.gmail.echomskfan.persons.data.TextDTO
 import com.gmail.echomskfan.persons.data.VipDTO
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import org.json.JSONArray
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
@@ -15,12 +19,11 @@ import java.util.*
 
 class Parser : IParser {
 
-    override fun getVips(context:Context): List<VipDTO> {
+    override fun getVips(context: Context): List<VipDTO> {
         val result = mutableListOf<VipDTO>()
 
-        val jsonString = loadJSONFromAsset(context,"vips.json")
+        val jsonString = loadJSONFromAsset(context, "vips.json")
         val jsonArray = JSONArray(jsonString)
-      //  val jsonArray = json.getJSONArray("")
 
         val size = jsonArray.length()
 
@@ -98,7 +101,7 @@ class Parser : IParser {
     override fun getCasts(url: String, vipDTO: VipDTO): List<ItemDTO> {
         if (url.isEmpty()) return listOf()
 
-        val document: Document
+        val document: Document?
         try {
             try {
                 document = getDocument(url)
@@ -112,11 +115,11 @@ class Parser : IParser {
             return listOf()
         }
 
-        return parseItems(document, vipDTO)
+        return document?.let { parseItems(document, vipDTO) } ?: listOf()
     }
 
     @Throws(IOException::class)
-    private fun getDocument(url: String): Document {
+    private fun getDocument(url: String): Document? {
         return Jsoup.connect(url).get()
     }
 
@@ -151,9 +154,6 @@ class Parser : IParser {
                 var mp3Url = ""
                 var mp3Duration = 0
                 var formattedDate = ""
-                var pageNum = 0
-                var orderWithinPage = 0
-                var favorite = false
 
                 try {
 
@@ -250,10 +250,8 @@ class Parser : IParser {
                         shortText,
                         mp3Url,
                         mp3Duration,
-                        formattedDate,
-                        pageNum,
-                        orderWithinPage,
-                        favorite)
+                        formattedDate
+                )
 
                 if (!result.contains(item)) {
                     if (!item.fullTextURL.isEmpty() || !item.mp3URL.isEmpty()) {
@@ -275,5 +273,106 @@ class Parser : IParser {
         `is`.close()
         json = String(buffer, Charset.forName("UTF-8"))
         return json
+    }
+
+     override fun getTextData(url: String): TextDTO? {
+        var result: TextDTO? = null
+
+        getDocument(url)?.let {
+            try {
+                result = parseText(it)
+            } catch (e: IndexOutOfBoundsException) {
+
+            }
+        }
+
+        return result
+    }
+
+    @Throws(IndexOutOfBoundsException::class)
+    private fun parseText(document: Document): TextDTO {
+        val textDTO = TextDTO()
+
+
+        val divs = document.getElementsByTag("div")
+        try {
+            setManyPersons(textDTO, divs)
+        } catch (e: IndexOutOfBoundsException) {
+            setOnePerson(textDTO, divs)
+        }
+
+        if (textDTO.personDTOs.isEmpty()) {
+            // from Latynina (one person)
+            setOnePerson(textDTO, divs)
+        }
+
+        for (div in divs) {
+            if (div.className() == "typical dialog _ga1_on_ contextualizable include-relap-widget") {
+                val all = div.allElements
+                for (each in all) {
+                    if (each.getElementsByTag("div").size > 0) {
+                        continue
+                    }
+
+                    var author = ""
+                    val pS = each.getElementsByTag("p")
+                    if (pS.size > 0) {
+                        val p = each.getElementsByTag("p")[0]
+                        val bS = p.getElementsByTag("b")
+                        if (bS.size > 0) {
+                            val b = p.getElementsByTag("b")[0]
+                            author = b.text().trim { it <= ' ' }
+                            val text = p.text().replace(author, "").replace("―", "").trim { it <= ' ' }
+                            textDTO.addTextWithAuthor(text, author)
+                        } else {
+                            val text = pS.text().replace(author, "").replace("―", "").trim { it <= ' ' }
+                            textDTO.addTextWithAuthor(text, author)
+                        }
+                    }
+
+                    val blockquoteS = each.getElementsByTag("blockquote")
+                    if (blockquoteS.size > 0) {
+                        val blockquote = blockquoteS[0]
+                        val text = blockquote.text().trim { it <= ' ' }
+                        textDTO.addQuote(text)
+                    }
+                }
+            }
+        }
+
+        return textDTO
+    }
+
+    private fun setManyPersons(textDTO: TextDTO, divs: Elements) {
+        for (div in divs) {
+            if (div.className() == "conthead discuss") {
+                var tmp: Element = div.getElementsByTag("div")[6]
+                tmp = tmp.getElementsByTag("div")[2]
+                val presenters = tmp.getElementsByTag("a")
+
+                for (a in presenters) {
+                    val person = PersonDTO(name = a.text())
+                    textDTO.personDTOs.add(person)
+                }
+                break
+            }
+        }
+    }
+
+    private fun setOnePerson(textDTO: TextDTO, divs: Elements) {
+        for (div in divs) {
+            if (div.className() == "conthead discuss") {
+                val presenter = div.getElementsByTag("div")[6]
+                        .getElementsByTag("div")[0]
+                        .getElementsByTag("a")[0]
+                        .getElementsByTag("span")[1]
+
+                val person = PersonDTO(
+                        name = presenter.getElementsByClass("name").text() + " - " + presenter.getElementsByClass("post").text()
+                )
+                textDTO.personDTOs.add(person)
+                break
+            }
+        }
     }
 }
