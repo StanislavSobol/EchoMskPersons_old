@@ -115,7 +115,6 @@ private fun ItemDTO.isValid() = fullTextURL.isNotEmpty() &&
         type.isNotEmpty() &&
         formattedDate.isNotEmpty()
 
-private fun BlockDTO.isValid() = true
-     //   text.isNotEmpty()
+private fun BlockDTO.isValid() = text.isNotEmpty() && (quote && personDTO == null || !quote)
 
 private fun PersonDTO.isValid() = name.isNotEmpty()
