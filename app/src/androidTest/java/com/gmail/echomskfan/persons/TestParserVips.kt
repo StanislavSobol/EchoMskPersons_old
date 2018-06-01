@@ -81,6 +81,26 @@ class TestParserVips : AndroidTestCase() {
             }
         }
     }
+
+    @Test
+    fun testLatynina180127() {
+        val textData = parser.getTextData("https://echo.msk.ru/programs/code/2136596-echo/")
+        Assert.assertNotNull(textData)
+        textData?.run {
+            assertTrue(personDTOs.isNotEmpty())
+            assertTrue(blockDTOs.isNotEmpty())  // Латынина 27 января пустая
+        }
+    }
+
+    @Test
+    fun testLatynina180120() {
+        val textData = parser.getTextData("https://echo.msk.ru/programs/code/2132238-echo/")
+        Assert.assertNotNull(textData)
+        textData?.run {
+            assertTrue(personDTOs.isNotEmpty())
+            assertTrue(blockDTOs.isNotEmpty())  // Латынина 27 января пустая
+        }
+    }
 }
 
 private fun VipDTO.isValid() = url.isNotEmpty() &&

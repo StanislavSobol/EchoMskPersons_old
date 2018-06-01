@@ -307,7 +307,8 @@ class Parser : IParser {
         }
 
         for (div in divs) {
-            if (div.className() == "typical dialog _ga1_on_ contextualizable include-relap-widget") {
+            if (div.className() == "typical dialog _ga1_on_ contextualizable include-relap-widget" ||
+                    div.className() ==     "typical  _ga1_on_ contextualizable include-relap-widget") {
                 val all = div.allElements
                 for (each in all) {
                     if (each.getElementsByTag("div").size > 0) {
