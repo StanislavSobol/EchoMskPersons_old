@@ -7,8 +7,7 @@ import com.gmail.echomskfan.persons.MApplication
 import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.interactor.IInteractor
 import com.gmail.echomskfan.persons.utils.ThrowableManager
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.gmail.echomskfan.persons.utils.fromIoToMain
 import javax.inject.Inject
 
 @InjectViewState
@@ -20,31 +19,27 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         MApplication.getDaggerComponents().inject(this)
-        loadVips()
-
-        Log.d("SSS", "interactor = $interactor")
+        loadVipsFromJsonToDb()
     }
 
-    private fun loadVips() {
-        val subs = interactor.loadVips(MApplication.getAppContext())
+    private fun loadVipsFromJsonToDb() {
+        Log.d("SSS", "loadVipsFromJsonToDb start")
+        interactor.loadVipsFromJsonToDb(MApplication.getAppContext())
                 .map {
                     val vmList = mutableListOf<VipVM>()
                     it.forEach { vmList.add(VipVM.fromEntity(it)) }
                     vmList.toList()
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .fromIoToMain()
                 .subscribe(
                         {
+                            Log.d("SSS", "loadVipsFromJsonToDb end")
                             viewState.loadVips(it)
                         },
                         {
                             ThrowableManager.process(it)
                         }
                 )
-
-        Log.d("SSS", "subs = $subs")
     }
-
 
 }

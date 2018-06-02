@@ -3,7 +3,7 @@ package com.gmail.echomskfan.persons
 import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.gmail.echomskfan.persons.data.PersonsDatabase
+import com.gmail.echomskfan.persons.data.db.PersonsDatabase
 import com.gmail.echomskfan.persons.interactor.parser.Parser
 import junit.framework.Assert.assertNotNull
 import org.junit.After
@@ -31,6 +31,7 @@ class TestDatabase {
     fun testCreation() {
         assertNotNull(appContext)
         assertNotNull(db)
+        assertTrue(db.isOpen)
         assertNotNull(parser)
     }
 

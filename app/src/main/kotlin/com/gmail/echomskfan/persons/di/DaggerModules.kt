@@ -13,9 +13,9 @@ class DaggerModules {
 
     @Provides
     @Singleton
-    fun privideInteractor(): IInteractor = Interactor()
+    fun provideInteractor(): IInteractor = Interactor()
 
     @Provides
     @Singleton
-    fun privideParser(): IParser = Parser()
+    fun provideParser(): IParser = Parser()
 }

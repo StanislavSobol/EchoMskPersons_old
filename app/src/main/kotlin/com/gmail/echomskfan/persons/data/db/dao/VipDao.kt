@@ -1,4 +1,4 @@
-package com.gmail.echomskfan.persons.data.dao
+package com.gmail.echomskfan.persons.data.db.dao
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert

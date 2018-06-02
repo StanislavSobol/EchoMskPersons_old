@@ -5,7 +5,6 @@ import com.gmail.echomskfan.persons.data.ItemDTO
 import com.gmail.echomskfan.persons.data.PersonDTO
 import com.gmail.echomskfan.persons.data.entity.VipEntity
 
-
 internal const val VIPS_AMOUNT = 2
 
 internal fun VipEntity.isValid() = url.isNotEmpty() &&
