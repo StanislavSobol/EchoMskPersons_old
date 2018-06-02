@@ -3,19 +3,15 @@ package com.gmail.echomskfan.persons
 import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import android.test.AndroidTestCase
-import com.gmail.echomskfan.persons.data.BlockDTO
-import com.gmail.echomskfan.persons.data.ItemDTO
-import com.gmail.echomskfan.persons.data.PersonDTO
-import com.gmail.echomskfan.persons.data.VipDTO
 import com.gmail.echomskfan.persons.interactor.parser.Parser
 import junit.framework.Assert
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class TestParserVips : AndroidTestCase() {
+class TestParserVips {
 
     private lateinit var parser: Parser
     private lateinit var appContext: Context
@@ -41,7 +37,7 @@ class TestParserVips : AndroidTestCase() {
     @Test
     fun testParserGetVips() {
         val vips = parser.getVips(appContext)
-        assertEquals(2, vips.size)
+        assertEquals(VIPS_AMOUNT, vips.size)
         vips.forEach { assertTrue(it.isValid()) }
     }
 
@@ -100,19 +96,3 @@ class TestParserVips : AndroidTestCase() {
         }
     }
 }
-
-private fun VipDTO.isValid() = url.isNotEmpty() &&
-        firstName.isNotEmpty() &&
-        lastName.isNotEmpty() &&
-        profession.isNotEmpty() &&
-        info.isNotEmpty() &&
-        photoUrl.isNotEmpty()
-
-
-private fun ItemDTO.isValid() = fullTextURL.isNotEmpty() &&
-        type.isNotEmpty() &&
-        formattedDate.isNotEmpty()
-
-private fun BlockDTO.isValid() = text.isNotEmpty() && (quote && personDTO == null || !quote)
-
-private fun PersonDTO.isValid() = name.isNotEmpty()

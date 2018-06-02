@@ -22,8 +22,6 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
         MApplication.getDaggerComponents().inject(this)
         loadVips()
 
-
-
         Log.d("SSS", "interactor = $interactor")
     }
 
@@ -44,18 +42,6 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
                             ThrowableManager.process(it)
                         }
                 )
-
-//                .subscribe(object: SingleObserver<List<VipDTO>> {
-//                    override fun onSubscribe(d: Disposable?) {
-//                    }
-//
-//                    override fun onSuccess(t: List<VipDTO>?) {
-//                    }
-//
-//                    override fun onError(e: Throwable?) {
-//                    }
-//
-//                }
 
         Log.d("SSS", "subs = $subs")
     }

@@ -5,7 +5,7 @@ import android.support.annotation.VisibleForTesting
 import com.gmail.echomskfan.persons.data.ItemDTO
 import com.gmail.echomskfan.persons.data.PersonDTO
 import com.gmail.echomskfan.persons.data.TextDTO
-import com.gmail.echomskfan.persons.data.VipDTO
+import com.gmail.echomskfan.persons.data.entity.VipEntity
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import org.json.JSONArray
 import org.jsoup.Jsoup
@@ -19,8 +19,8 @@ import java.util.*
 
 class Parser : IParser {
 
-    override fun getVips(context: Context): List<VipDTO> {
-        val result = mutableListOf<VipDTO>()
+    override fun getVips(context: Context): List<VipEntity> {
+        val result = mutableListOf<VipEntity>()
 
         val jsonString = loadJSONFromAsset(context, "vips.json")
         val jsonArray = JSONArray(jsonString)
@@ -30,7 +30,7 @@ class Parser : IParser {
         for (i in 0 until size) {
             val jsonObject = jsonArray.getJSONObject(i)
             result.add(
-                    VipDTO(
+                    VipEntity(
                             jsonObject.get("url") as String,
                             jsonObject.get("firstName") as String,
                             jsonObject.get("lastName") as String,
@@ -44,61 +44,8 @@ class Parser : IParser {
         return result
     }
 
-    override fun getVip(url: String): VipDTO? {
-        return null
-        /*
-        if (url.isEmpty()) {
-            return null
-        }
 
-        val result: VipDTO
-
-        val document: Document
-        try {
-            try {
-                document = getDocument(url)
-            } catch (e: IllegalArgumentException) {
-                ThrowableManager.process(e)
-                return null
-            }
-
-            val divProfile = document.body()
-                    .getElementsByTag("div")[0]
-                    .getElementsByClass("content")[0]
-                    .getElementsByClass("column")[0]
-                    .getElementsByClass("profile")[0]
-
-
-            val personDiv = divProfile
-                    .getElementsByTag("div")[2]
-
-            result = VipDTO()
-
-            val name = personDiv.getElementsByTag("h1")[0].text()
-            result.setFirstName(StringUtils.getFirstName(name))
-            result.setLastName(StringUtils.getLastName(name))
-
-            result.setUrl(url)
-            result.setProfession(personDiv.getElementsByTag("span")[0].text())
-            result.setInfo(personDiv.getElementsByTag("div")[0].text())
-
-            val photoDiv = divProfile
-                    .getElementsByTag("div")[1]
-                    .getElementsByTag("img")[0]
-
-            result.setPhotoUrl(photoDiv.attr("src"))
-
-        } catch (e: IOException) {
-            ThrowableManager.process(e)
-            return null
-        }
-
-        return result
-        */
-    }
-
-
-    override fun getCasts(url: String, vipDTO: VipDTO): List<ItemDTO> {
+    override fun getCasts(url: String, vipEntity: VipEntity): List<ItemDTO> {
         if (url.isEmpty()) return listOf()
 
         val document: Document?
@@ -115,7 +62,7 @@ class Parser : IParser {
             return listOf()
         }
 
-        return document?.let { parseItems(document, vipDTO) } ?: listOf()
+        return document?.let { parseItems(document, vipEntity) } ?: listOf()
     }
 
     @Throws(IOException::class)
@@ -124,7 +71,7 @@ class Parser : IParser {
     }
 
     @Synchronized
-    private fun parseItems(document: Document, vipDTO: VipDTO): List<ItemDTO> {
+    private fun parseItems(document: Document, vipEntity: VipEntity): List<ItemDTO> {
         val result = ArrayList<ItemDTO>()
         val divs = document.getElementsByTag("div")
         for (div in divs) {
@@ -142,7 +89,7 @@ class Parser : IParser {
                     // Logger.writeError("parseItems()::wrong person");
                 }
 
-                if (!person.contains(vipDTO.lastName)) {
+                if (!person.contains(vipEntity.lastName)) {
                     continue
                 }
 
