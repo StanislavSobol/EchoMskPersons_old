@@ -3,8 +3,12 @@ package com.gmail.echomskfan.persons
 import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.data.db.PersonsDatabase
+import com.gmail.echomskfan.persons.data.entity.VipFavEntity
+import com.gmail.echomskfan.persons.interactor.Interactor
 import com.gmail.echomskfan.persons.interactor.parser.Parser
+import com.gmail.echomskfan.persons.ui.vips.VipsPresenter
 import junit.framework.Assert.assertNotNull
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -36,24 +40,58 @@ class TestDatabase {
     }
 
     @Test
-    fun testVipInsertFromJsonToDbAndDelete() {
+    fun testVipInsertFromJsonToDbAndDelete_ProperApproach() {
         val vips = parser.getVips(appContext)
         assertEquals(VIPS_AMOUNT, vips.size)
         vips.forEach {
             assertTrue(it.isValid())
-            db.getVipDao().insert(it)
+            db.getVipFavDao().insert(VipFavEntity(it.url))
         }
 
-        var dbVips = db.getVipDao().getAll()
-        assertEquals(VIPS_AMOUNT, dbVips.size)
+        val dbVipFavs = db.getVipFavDao().getAll()
+        assertEquals(VIPS_AMOUNT, dbVipFavs.size)
 
         for (i in 0 until VIPS_AMOUNT) {
-            assertEquals(vips[i], dbVips[i])
+            assertEquals(vips[i].url, dbVipFavs[i].url)
         }
+    }
 
-        db.getVipDao().deleteAll()
-        dbVips = db.getVipDao().getAll()
-        assertTrue(dbVips.isEmpty())
+    @Test
+    fun testPresenterAndInteractorGetVips() {
+        val presenter = VipsPresenter()
+
+        presenter.onFirstViewAttach()
+        assertNotNull(presenter.interactor)
+
+        val vips = parser.getVips(appContext)
+
+        presenter.loadVipsFromJsonToDbMappedToVipsVM()
+                .subscribe({
+                    assertEquals(vips.size, it.size)
+
+                    for (i in 0 until it.size) {
+                        assertEquals(VipVM.fromEntity(vips[i]), it[i])
+                    }
+                }, {
+                    assertTrue(false)
+                })
+    }
+
+    @Test
+    fun initialInteractorCopyVipsFromJsonToDb_checkDb() {
+        val interactor = Interactor()
+
+        interactor.copyVipsFromJsonToDb(appContext)
+                .subscribe({
+                    val vips = db.getVipFavDao().getAll()
+
+                    assertEquals(vips.size, it.size)
+                    for (i in 0 until vips.size) {
+                        assertEquals(vips[i].url, it[i].url)
+                    }
+                }, {
+                    assertTrue(false)
+                })
     }
 
     @After
