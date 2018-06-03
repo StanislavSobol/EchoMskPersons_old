@@ -39,7 +39,7 @@ class VipsListAdapter(val context: Context) : RecyclerView.Adapter<VipsListAdapt
             itemView.vip_item_name_text_view.text = vipVM.name
             itemView.vip_item_profession_text_view.text = vipVM.profession
             PicassoFilteredLoader.load(context, vipVM.photoUrl, itemView.vip_item_image_view)
-            itemView.vip_item_ripple_layout.setOnClickListener { }
+            //    itemView.vip_item_ripple_layout.setOnClickListener { }
         }
     }
 }

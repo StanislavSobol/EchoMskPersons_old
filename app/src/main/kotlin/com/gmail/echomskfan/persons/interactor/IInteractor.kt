@@ -7,7 +7,5 @@ import io.reactivex.Single
 
 interface IInteractor {
 
-    fun loadVipsFromJsonToDb(appContext: Context): Single<List<VipEntity>>
-
-    fun loadVips(appContext: Context): Single<List<VipEntity>>
+    fun copyVipsFromJsonToDb(appContext: Context): Single<List<VipEntity>>
 }

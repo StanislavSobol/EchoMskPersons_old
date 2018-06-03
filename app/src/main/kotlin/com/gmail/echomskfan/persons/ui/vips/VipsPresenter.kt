@@ -1,6 +1,5 @@
 package com.gmail.echomskfan.persons.ui.vips
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.gmail.echomskfan.persons.MApplication
@@ -23,8 +22,7 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
     }
 
     private fun loadVipsFromJsonToDb() {
-        Log.d("SSS", "loadVipsFromJsonToDb start")
-        interactor.loadVipsFromJsonToDb(MApplication.getAppContext())
+        interactor.copyVipsFromJsonToDb(MApplication.getAppContext())
                 .map {
                     val vmList = mutableListOf<VipVM>()
                     it.forEach { vmList.add(VipVM.fromEntity(it)) }
@@ -33,7 +31,6 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
                 .fromIoToMain()
                 .subscribe(
                         {
-                            Log.d("SSS", "loadVipsFromJsonToDb end")
                             viewState.loadVips(it)
                         },
                         {
