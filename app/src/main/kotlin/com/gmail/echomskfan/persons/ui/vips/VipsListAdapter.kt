@@ -36,9 +36,13 @@ class VipsListAdapter(val context: Context) : RecyclerView.Adapter<VipsListAdapt
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun setItem(vipVM: VipVM) {
-            itemView.vip_item_name_text_view.text = vipVM.name
-            itemView.vip_item_profession_text_view.text = vipVM.profession
-            PicassoFilteredLoader.load(context, vipVM.photoUrl, itemView.vip_item_image_view)
+            itemView.vipItemNameTextView.text = vipVM.name
+            itemView.vipItemProfessionTextView.text = vipVM.profession
+            PicassoFilteredLoader.load(context, vipVM.photoUrl, itemView.vipItemImageView)
+            itemView.vipItemInfoTextView.text = vipVM.info
+            itemView.vipItemFavImageView.setImageResource(
+                    if (vipVM.fav) R.drawable.ic_baseline_favorite_24px else R.drawable.ic_baseline_favorite_border_24px
+            )
             //    itemView.vip_item_ripple_layout.setOnClickListener { }
         }
     }

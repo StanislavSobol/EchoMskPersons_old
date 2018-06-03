@@ -79,9 +79,7 @@ class TestDatabase {
 
     @Test
     fun initialInteractorCopyVipsFromJsonToDb() {
-        val interactor = Interactor()
-
-        interactor.copyVipsFromJsonToDb(appContext)
+        Interactor().copyVipsFromJsonToDb(appContext)
                 .subscribe({
                     val vips = db.getVipFavDao().getAll()
 
@@ -95,9 +93,8 @@ class TestDatabase {
     }
 
     @Test
-    fun checkVipFavGetBuPk() {
-        val interactor = Interactor()
-        interactor.copyVipsFromJsonToDb(appContext).subscribe()
+    fun checkVipFavGetByPk() {
+        Interactor().copyVipsFromJsonToDb(appContext).subscribe()
 
         val dao = db.getVipFavDao()
         val vips = dao.getAll()
