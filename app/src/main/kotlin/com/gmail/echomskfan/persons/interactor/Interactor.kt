@@ -20,9 +20,12 @@ class Interactor : IInteractor {
 
     override fun copyVipsFromJsonToDb(appContext: Context): Single<List<VipEntity>> {
         return Single.create {
-            val vips = parser.getVips(appContext)
+            val vips = parser.getVips(appContext).toMutableList()
             vips.forEach {
-                PersonsDatabase.getInstance(appContext).getVipFavDao().insert(VipFavEntity(it.url))
+                val dao = PersonsDatabase.getInstance(appContext).getVipFavDao()
+                dao.insert(VipFavEntity(it.url))
+                val vipFav = dao.getByPk(it.url)
+                it.fav = vipFav.fav
             }
             it.onSuccess(vips)
         }

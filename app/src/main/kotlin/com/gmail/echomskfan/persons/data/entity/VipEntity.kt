@@ -9,7 +9,7 @@ data class VipEntity(
         val profession: String,
         val info: String,
         val photoUrl: String,
-        val fav: Boolean = false
+        var fav: Boolean = false
 ) {
     fun getFullUrl(pageNum: Int = 1) = "${IData.MAIN_URL}$url${IData.URL_ARCHIVE_PATH}/$pageNum.html"
 }

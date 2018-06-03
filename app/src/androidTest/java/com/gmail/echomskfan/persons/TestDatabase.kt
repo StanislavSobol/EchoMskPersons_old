@@ -57,7 +57,7 @@ class TestDatabase {
     }
 
     @Test
-    fun testPresenterAndInteractorGetVips() {
+    fun testPresenterAndInteractorGetVipsAndCheckVms() {
         val presenter = VipsPresenter()
 
         presenter.onFirstViewAttach()
@@ -78,7 +78,7 @@ class TestDatabase {
     }
 
     @Test
-    fun initialInteractorCopyVipsFromJsonToDb_checkDb() {
+    fun initialInteractorCopyVipsFromJsonToDb() {
         val interactor = Interactor()
 
         interactor.copyVipsFromJsonToDb(appContext)
@@ -92,6 +92,19 @@ class TestDatabase {
                 }, {
                     assertTrue(false)
                 })
+    }
+
+    @Test
+    fun checkVipFavGetBuPk() {
+        val interactor = Interactor()
+        interactor.copyVipsFromJsonToDb(appContext).subscribe()
+
+        val dao = db.getVipFavDao()
+        val vips = dao.getAll()
+        assertEquals(vips.size, VIPS_AMOUNT)
+        vips.forEach {
+            assertEquals(dao.getByPk(it.url), it)
+        }
     }
 
     @After
