@@ -7,7 +7,8 @@ data class VipVM(val url: String,
                  val profession: String,
                  val info: String,
                  val photoUrl: String,
-                 val fav: Boolean) {
+                 val fav: Boolean,
+                 var notification: Boolean) {
 
     companion object {
         fun fromEntity(entity: VipEntity): VipVM {
@@ -17,7 +18,8 @@ data class VipVM(val url: String,
                     entity.profession,
                     entity.info,
                     entity.photoUrl,
-                    entity.fav)
+                    entity.fav,
+                    entity.notification)
         }
     }
 }

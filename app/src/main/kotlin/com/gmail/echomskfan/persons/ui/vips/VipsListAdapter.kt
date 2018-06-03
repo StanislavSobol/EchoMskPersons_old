@@ -43,6 +43,9 @@ class VipsListAdapter(val context: Context) : RecyclerView.Adapter<VipsListAdapt
             itemView.vipItemFavImageView.setImageResource(
                     if (vipVM.fav) R.drawable.ic_baseline_favorite_24px else R.drawable.ic_baseline_favorite_border_24px
             )
+            itemView.vipItemNotificationImageView.setImageResource(
+                    if (vipVM.notification) R.drawable.ic_baseline_notifications_24px else R.drawable.ic_baseline_notifications_none_24px
+            )
             //    itemView.vip_item_ripple_layout.setOnClickListener { }
         }
     }

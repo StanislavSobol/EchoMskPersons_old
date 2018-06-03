@@ -5,7 +5,7 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.data.db.PersonsDatabase
-import com.gmail.echomskfan.persons.data.entity.VipFavEntity
+import com.gmail.echomskfan.persons.data.entity.VipDetailsEntity
 import com.gmail.echomskfan.persons.interactor.Interactor
 import com.gmail.echomskfan.persons.interactor.parser.Parser
 import com.gmail.echomskfan.persons.ui.vips.VipsPresenter
@@ -45,7 +45,7 @@ class TestDatabase {
         assertEquals(VIPS_AMOUNT, vips.size)
         vips.forEach {
             assertTrue(it.isValid())
-            db.getVipFavDao().insert(VipFavEntity(it.url))
+            db.getVipFavDao().insert(VipDetailsEntity(it.url))
         }
 
         val dbVipFavs = db.getVipFavDao().getAll()

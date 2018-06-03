@@ -6,9 +6,9 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import android.support.annotation.VisibleForTesting
 import com.gmail.echomskfan.persons.data.db.dao.VipFavDao
-import com.gmail.echomskfan.persons.data.entity.VipFavEntity
+import com.gmail.echomskfan.persons.data.entity.VipDetailsEntity
 
-@Database(entities = arrayOf(VipFavEntity::class), version = 1)
+@Database(entities = arrayOf(VipDetailsEntity::class), version = 1)
 abstract class PersonsDatabase : RoomDatabase() {
 
     abstract fun getVipFavDao(): VipFavDao
