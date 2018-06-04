@@ -11,14 +11,13 @@ import com.gmail.echomskfan.persons.interactor.parser.Parser
 import com.gmail.echomskfan.persons.ui.vips.VipsPresenter
 import junit.framework.Assert.assertNotNull
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class TestDatabase {
+class TestVips {
 
     private lateinit var appContext: Context
     private lateinit var db: PersonsDatabase
@@ -102,6 +101,21 @@ class TestDatabase {
         vips.forEach {
             assertEquals(dao.getByPk(it.url), it)
         }
+    }
+
+    @Test
+    fun testInteractorSwitchVipNotificationById() {
+        val interactor = Interactor()
+
+        interactor.copyVipsFromJsonToDb(appContext).subscribe()
+
+        val dao = db.getVipFavDao()
+        val vip = dao.getAll()[0]
+        val oldNotification = vip.notification
+
+        interactor.switchVipNotificationById(appContext, vip.url, vip.notification).subscribe()
+
+        assertNotEquals(oldNotification, dao.getByPk(vip.url).notification)
     }
 
     @After

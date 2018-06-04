@@ -6,6 +6,8 @@ import com.gmail.echomskfan.persons.data.db.PersonsDatabase
 import com.gmail.echomskfan.persons.data.entity.VipDetailsEntity
 import com.gmail.echomskfan.persons.data.entity.VipEntity
 import com.gmail.echomskfan.persons.interactor.parser.IParser
+import com.gmail.echomskfan.persons.utils.ThrowableManager
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -31,5 +33,19 @@ class Interactor : IInteractor {
             it.onSuccess(vips)
         }
     }
+
+    override fun switchVipNotificationById(appContext: Context, url: String, oldNotification: Boolean): Completable {
+        return Completable.create {
+            try {
+                val dao = PersonsDatabase.getInstance(appContext).getVipFavDao()
+                dao.setNotificationByPk(url, !oldNotification)
+                it.onComplete()
+            } catch (t: Throwable) {
+                ThrowableManager.process(t)
+                it.onError(t)
+            }
+        }
+    }
+
 }
 

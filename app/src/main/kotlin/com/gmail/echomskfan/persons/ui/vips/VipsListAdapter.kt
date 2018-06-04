@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import com.gmail.echomskfan.persons.R
 import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.utils.PicassoFilteredLoader
+import com.gmail.echomskfan.persons.utils.fromIoToMain
 import kotlinx.android.synthetic.main.vip_item.view.*
 import java.util.*
 
-class VipsListAdapter(val context: Context) : RecyclerView.Adapter<VipsListAdapter.Holder>() {
+class VipsListAdapter(val context: Context, val presenter: VipsPresenter) : RecyclerView.Adapter<VipsListAdapter.Holder>() {
 
     private val items = ArrayList<VipVM>()
 
@@ -40,12 +41,26 @@ class VipsListAdapter(val context: Context) : RecyclerView.Adapter<VipsListAdapt
             itemView.vipItemProfessionTextView.text = vipVM.profession
             PicassoFilteredLoader.load(context, vipVM.photoUrl, itemView.vipItemImageView)
             itemView.vipItemInfoTextView.text = vipVM.info
-            itemView.vipItemFavImageView.setImageResource(
-                    if (vipVM.fav) R.drawable.ic_baseline_favorite_24px else R.drawable.ic_baseline_favorite_border_24px
-            )
+
             itemView.vipItemNotificationImageView.setImageResource(
-                    if (vipVM.notification) R.drawable.ic_baseline_notifications_24px else R.drawable.ic_baseline_notifications_none_24px
+                    if (vipVM.notification) R.drawable.ic_baseline_notifications_24px
+                    else R.drawable.ic_baseline_notifications_none_24px
             )
+            itemView.vipItemNotificationImageView.setOnClickListener {
+                presenter.setNotificationForItem(vipVM).fromIoToMain().subscribe {
+                    vipVM.notification = !vipVM.notification
+                    notifyDataSetChanged()
+//                    if (vipVM.notification) R.drawable.ic_baseline_notifications_24px
+//                    else R.drawable.ic_baseline_notifications_none_24px
+                }
+            }
+
+            itemView.vipItemFavImageView.setImageResource(
+                    if (vipVM.fav) R.drawable.ic_baseline_favorite_24px
+                    else R.drawable.ic_baseline_favorite_border_24px
+            )
+
+
             //    itemView.vip_item_ripple_layout.setOnClickListener { }
         }
     }

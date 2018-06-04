@@ -21,7 +21,7 @@ class VipsFragment : MvpFragment(), IVipsView {
     @ProvidePresenter
     fun providePresenter() = VipsPresenter()
 
-    private val adapter: VipsListAdapter by lazy { VipsListAdapter(activity) }
+    private val adapter: VipsListAdapter by lazy { VipsListAdapter(activity, presenter) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_lessons_list, container, false)

@@ -8,6 +8,7 @@ import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.interactor.IInteractor
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import com.gmail.echomskfan.persons.utils.fromIoToMain
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -40,6 +41,10 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
                     vmList.toList()
                 }
                 .fromIoToMain()
+    }
+
+    fun setNotificationForItem(item: VipVM): Completable {
+        return interactor.switchVipNotificationById(MApplication.getAppContext(), item.url, item.notification)
     }
 
 }
