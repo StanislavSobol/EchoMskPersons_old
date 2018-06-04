@@ -22,4 +22,9 @@ interface VipFavDao {
             " SET " + VipDetailsEntity.FIELD_NOTIFICATION + " = :notification" +
             " WHERE " + VipDetailsEntity.FIELD_URL + " = :url")
     fun setNotificationByPk(url: String, notification: Boolean)
+
+    @Query("UPDATE " + VipDetailsEntity.TABLE +
+            " SET " + VipDetailsEntity.FIELD_FAV + " = :fav" +
+            " WHERE " + VipDetailsEntity.FIELD_URL + " = :url")
+    fun setFavByPk(url: String, fav: Boolean)
 }

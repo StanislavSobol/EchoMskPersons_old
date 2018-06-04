@@ -10,4 +10,5 @@ interface IInteractor {
 
     fun copyVipsFromJsonToDb(appContext: Context): Single<List<VipEntity>>
     fun switchVipNotificationById(appContext: Context, url: String, oldNotification: Boolean): Completable
+    fun switchVipFavById(appContext: Context, url: String, oldFav: Boolean): Completable
 }

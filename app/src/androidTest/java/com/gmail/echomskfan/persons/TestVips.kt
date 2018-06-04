@@ -118,6 +118,21 @@ class TestVips {
         assertNotEquals(oldNotification, dao.getByPk(vip.url).notification)
     }
 
+    @Test
+    fun testInteractorSwitchVipFavById() {
+        val interactor = Interactor()
+
+        interactor.copyVipsFromJsonToDb(appContext).subscribe()
+
+        val dao = db.getVipFavDao()
+        val vip = dao.getAll()[0]
+        val oldFav = vip.fav
+
+        interactor.switchVipFavById(appContext, vip.url, vip.fav).subscribe()
+
+        assertNotEquals(oldFav, dao.getByPk(vip.url).fav)
+    }
+
     @After
     fun after() {
         db.close()

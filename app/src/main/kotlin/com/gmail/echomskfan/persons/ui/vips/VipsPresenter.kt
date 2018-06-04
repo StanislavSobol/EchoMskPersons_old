@@ -43,8 +43,12 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
                 .fromIoToMain()
     }
 
-    fun setNotificationForItem(item: VipVM): Completable {
+    fun switchNotificationForItem(item: VipVM): Completable {
         return interactor.switchVipNotificationById(MApplication.getAppContext(), item.url, item.notification)
+    }
+
+    fun switchFavnForItem(item: VipVM): Completable {
+        return interactor.switchVipFavById(MApplication.getAppContext(), item.url, item.fav)
     }
 
 }

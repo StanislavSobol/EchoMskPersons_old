@@ -37,8 +37,19 @@ class Interactor : IInteractor {
     override fun switchVipNotificationById(appContext: Context, url: String, oldNotification: Boolean): Completable {
         return Completable.create {
             try {
-                val dao = PersonsDatabase.getInstance(appContext).getVipFavDao()
-                dao.setNotificationByPk(url, !oldNotification)
+                PersonsDatabase.getInstance(appContext).getVipFavDao().setNotificationByPk(url, !oldNotification)
+                it.onComplete()
+            } catch (t: Throwable) {
+                ThrowableManager.process(t)
+                it.onError(t)
+            }
+        }
+    }
+
+    override fun switchVipFavById(appContext: Context, url: String, oldFav: Boolean): Completable {
+        return Completable.create {
+            try {
+                PersonsDatabase.getInstance(appContext).getVipFavDao().setFavByPk(url, !oldFav)
                 it.onComplete()
             } catch (t: Throwable) {
                 ThrowableManager.process(t)

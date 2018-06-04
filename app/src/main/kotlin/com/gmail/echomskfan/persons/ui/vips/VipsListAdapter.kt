@@ -46,12 +46,11 @@ class VipsListAdapter(val context: Context, val presenter: VipsPresenter) : Recy
                     if (vipVM.notification) R.drawable.ic_baseline_notifications_24px
                     else R.drawable.ic_baseline_notifications_none_24px
             )
+
             itemView.vipItemNotificationImageView.setOnClickListener {
-                presenter.setNotificationForItem(vipVM).fromIoToMain().subscribe {
+                presenter.switchNotificationForItem(vipVM).fromIoToMain().subscribe {
                     vipVM.notification = !vipVM.notification
                     notifyDataSetChanged()
-//                    if (vipVM.notification) R.drawable.ic_baseline_notifications_24px
-//                    else R.drawable.ic_baseline_notifications_none_24px
                 }
             }
 
@@ -59,6 +58,13 @@ class VipsListAdapter(val context: Context, val presenter: VipsPresenter) : Recy
                     if (vipVM.fav) R.drawable.ic_baseline_favorite_24px
                     else R.drawable.ic_baseline_favorite_border_24px
             )
+
+            itemView.vipItemFavImageView.setOnClickListener {
+                presenter.switchFavnForItem(vipVM).fromIoToMain().subscribe {
+                    vipVM.fav = !vipVM.fav
+                    notifyDataSetChanged()
+                }
+            }
 
 
             //    itemView.vip_item_ripple_layout.setOnClickListener { }

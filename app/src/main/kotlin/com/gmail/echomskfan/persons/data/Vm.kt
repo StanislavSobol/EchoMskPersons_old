@@ -7,7 +7,7 @@ data class VipVM(val url: String,
                  val profession: String,
                  val info: String,
                  val photoUrl: String,
-                 val fav: Boolean,
+                 var fav: Boolean,
                  var notification: Boolean) {
 
     companion object {
