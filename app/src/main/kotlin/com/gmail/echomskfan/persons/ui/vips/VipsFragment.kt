@@ -11,7 +11,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.gmail.echomskfan.persons.R
 import com.gmail.echomskfan.persons.data.VipVM
-import kotlinx.android.synthetic.main.fragment_lessons_list.*
+import kotlinx.android.synthetic.main.fragment_vips_list.*
 
 class VipsFragment : MvpFragment(), IVipsView {
 
@@ -24,7 +24,7 @@ class VipsFragment : MvpFragment(), IVipsView {
     private val adapter: VipsListAdapter by lazy { VipsListAdapter(activity, presenter) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_lessons_list, container, false)
+        return inflater.inflate(R.layout.fragment_vips_list, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -38,14 +38,6 @@ class VipsFragment : MvpFragment(), IVipsView {
 
 //        adapter.onItemClickListener = { id -> DetailedLessonActivity.startActivity(activity, id) }
 //
-//        swipeRefreshLayout.setOnRefreshListener {
-//            Handler().postDelayed({
-//                presenter.viewCreated()
-//                swipeRefreshLayout.isRefreshing = false
-//            }, 1000)
-//        }
-//
-//        presenter.viewCreated()
     }
 
     override fun loadVips(vips: List<VipVM>) {
