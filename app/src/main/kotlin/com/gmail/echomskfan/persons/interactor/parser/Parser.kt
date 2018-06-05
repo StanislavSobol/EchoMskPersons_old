@@ -78,7 +78,6 @@ class Parser : IParser {
             val divsPrevcontent = div.getElementsByClass("prevcontent")
             for (divPrevcontent in divsPrevcontent) {
 
-
                 var person = ""
                 try {
                     person = divPrevcontent.getElementsByTag("p")[0]
@@ -151,7 +150,6 @@ class Parser : IParser {
                     mp3Url = divPrevcontent.getElementsByClass("mediamenu")[0]
                             .getElementsByTag("a")[3].attr("href")
                 } catch (e: IndexOutOfBoundsException) {
-                    //                    Logger.writeError("parseItems()::item.mp3URL");
                 }
 
                 if (mp3Url.isEmpty()) {
@@ -159,9 +157,7 @@ class Parser : IParser {
                         mp3Url = divPrevcontent.getElementsByClass("mediamenu")[0]
                                 .getElementsByTag("a")[2].attr("href")
                     } catch (e: IndexOutOfBoundsException) {
-                        //                        Logger.writeError("parseItems()::item.mp3URL 2");
                     }
-
                 }
 
                 try {
@@ -190,18 +186,19 @@ class Parser : IParser {
                 }
 
 
-                val item = ItemDTO(fullTextURL,
-                        type,
-                        subtype,
-                        photoURL,
-                        shortText,
-                        mp3Url,
-                        mp3Duration,
-                        formattedDate
+                val item = ItemDTO(
+                        fullTextURL = fullTextURL,
+                        type = type,
+                        subtype = subtype,
+                        photoUrl = photoURL,
+                        shortText = shortText,
+                        mp3Url = mp3Url,
+                        mp3Duration = mp3Duration,
+                        formattedDate = formattedDate
                 )
 
                 if (!result.contains(item)) {
-                    if (!item.fullTextURL.isEmpty() || !item.mp3URL.isEmpty()) {
+                    if (!item.fullTextURL.isEmpty() || !item.mp3Url.isEmpty()) {
                         result.add(item)
                     }
                 }

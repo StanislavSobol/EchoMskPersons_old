@@ -10,11 +10,10 @@ import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.utils.PicassoFilteredLoader
 import com.gmail.echomskfan.persons.utils.fromIoToMain
 import kotlinx.android.synthetic.main.vip_item.view.*
-import java.util.*
 
-class VipsListAdapter(val context: Context, val presenter: VipsPresenter) : RecyclerView.Adapter<VipsListAdapter.Holder>() {
+class VipsListAdapter(private val context: Context, private val presenter: VipsPresenter) : RecyclerView.Adapter<VipsListAdapter.Holder>() {
 
-    private val items = ArrayList<VipVM>()
+    private val items = mutableListOf<VipVM>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater
@@ -25,9 +24,7 @@ class VipsListAdapter(val context: Context, val presenter: VipsPresenter) : Recy
         holder.setItem(items[position])
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount() = items.size
 
     internal fun addItems(vips: List<VipVM>) {
         items.clear()
@@ -48,7 +45,7 @@ class VipsListAdapter(val context: Context, val presenter: VipsPresenter) : Recy
             )
 
             itemView.vipItemNotificationImageView.setOnClickListener {
-                presenter.switchNotificationForItem(vipVM).fromIoToMain().subscribe {
+                presenter.itemNotificationIconClicked(vipVM).fromIoToMain().subscribe {
                     vipVM.notification = !vipVM.notification
                     notifyDataSetChanged()
                 }
@@ -60,13 +57,15 @@ class VipsListAdapter(val context: Context, val presenter: VipsPresenter) : Recy
             )
 
             itemView.vipItemFavImageView.setOnClickListener {
-                presenter.switchFavnForItem(vipVM).fromIoToMain().subscribe {
+                presenter.itemFavIconClicked(vipVM).fromIoToMain().subscribe {
                     vipVM.fav = !vipVM.fav
                     notifyDataSetChanged()
                 }
             }
 
-
+            itemView.setOnClickListener {
+                presenter.itemClicked(vipVM)
+            }
             //    itemView.vip_item_ripple_layout.setOnClickListener { }
         }
     }

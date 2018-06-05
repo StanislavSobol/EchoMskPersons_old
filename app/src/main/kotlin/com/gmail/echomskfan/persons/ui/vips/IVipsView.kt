@@ -8,5 +8,8 @@ import com.gmail.echomskfan.persons.data.VipVM
 interface IVipsView : MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun loadVips(vips: List<VipVM>)
+    fun showVips(vips: List<VipVM>)
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun showVip(url: String)
 }

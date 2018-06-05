@@ -16,7 +16,7 @@ interface VipFavDao {
     fun insert(vipDetailsEntity: VipDetailsEntity)
 
     @Query("SELECT * FROM " + VipDetailsEntity.TABLE + " WHERE " + VipDetailsEntity.FIELD_URL + " = :url")
-    fun getByPk(url: String): VipDetailsEntity
+    fun getByPk(url: String): VipDetailsEntity?
 
     @Query("UPDATE " + VipDetailsEntity.TABLE +
             " SET " + VipDetailsEntity.FIELD_NOTIFICATION + " = :notification" +

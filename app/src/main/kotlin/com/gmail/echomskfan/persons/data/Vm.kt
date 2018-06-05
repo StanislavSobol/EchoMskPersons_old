@@ -11,15 +11,38 @@ data class VipVM(val url: String,
                  var notification: Boolean) {
 
     companion object {
-        fun fromEntity(entity: VipEntity): VipVM {
-            return VipVM(
-                    entity.url,
-                    entity.firstName + " " + entity.lastName,
-                    entity.profession,
-                    entity.info,
-                    entity.photoUrl,
-                    entity.fav,
-                    entity.notification)
-        }
+        fun fromEntity(entity: VipEntity) =
+                VipVM(
+                        entity.url,
+                        entity.firstName + " " + entity.lastName,
+                        entity.profession,
+                        entity.info,
+                        entity.photoUrl,
+                        entity.fav,
+                        entity.notification)
+    }
+}
+
+data class CastVM(val fullTextURL: String,
+                  val type: String,
+                  val subtype: String,
+                  val photoUrl: String,
+                  val shortText: String,
+                  val mp3Url: String,
+                  val mp3Duration: Int,
+                  val fav: Boolean
+) {
+    companion object {
+        fun fromEntity(entity: ItemDTO) =
+                CastVM(
+                        entity.fullTextURL,
+                        entity.type,
+                        entity.subtype,
+                        entity.photoUrl,
+                        entity.shortText,
+                        entity.mp3Url,
+                        entity.mp3Duration,
+                        entity.fav
+                )
     }
 }

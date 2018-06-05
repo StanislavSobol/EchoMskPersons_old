@@ -10,6 +10,7 @@ import com.gmail.echomskfan.persons.utils.ThrowableManager
 import com.gmail.echomskfan.persons.utils.fromIoToMain
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 @InjectViewState
@@ -18,6 +19,9 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
     @Inject
     lateinit var interactor: IInteractor
 
+    // TODO refactor - to the base class
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     public override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         MApplication.getDaggerComponents().inject(this)
@@ -25,11 +29,14 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
     }
 
     private fun loadVipsFromJsonToDb() {
-        loadVipsFromJsonToDbMappedToVipsVM()
+        compositeDisposable.clear()
+        compositeDisposable.add(
+                loadVipsFromJsonToDbMappedToVipsVM()
                 .subscribe(
-                        { viewState.loadVips(it) },
+                        { viewState.showVips(it) },
                         { ThrowableManager.process(it) }
                 )
+        )
     }
 
     @VisibleForTesting
@@ -43,12 +50,20 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
                 .fromIoToMain()
     }
 
-    fun switchNotificationForItem(item: VipVM): Completable {
+    fun itemNotificationIconClicked(item: VipVM): Completable {
         return interactor.switchVipNotificationById(MApplication.getAppContext(), item.url, item.notification)
     }
 
-    fun switchFavnForItem(item: VipVM): Completable {
+    fun itemFavIconClicked(item: VipVM): Completable {
         return interactor.switchVipFavById(MApplication.getAppContext(), item.url, item.fav)
     }
 
+    fun itemClicked(item: VipVM) {
+        viewState.showVip(item.url)
+    }
+
+    override fun onDestroy() {
+        compositeDisposable.clear()
+        super.onDestroy()
+    }
 }

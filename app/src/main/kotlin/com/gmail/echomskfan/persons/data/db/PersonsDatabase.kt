@@ -5,13 +5,17 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import android.support.annotation.VisibleForTesting
+import com.gmail.echomskfan.persons.data.ItemDTO
+import com.gmail.echomskfan.persons.data.db.dao.CastDao
 import com.gmail.echomskfan.persons.data.db.dao.VipFavDao
 import com.gmail.echomskfan.persons.data.entity.VipDetailsEntity
 
-@Database(entities = arrayOf(VipDetailsEntity::class), version = 1)
+@Database(entities = [(VipDetailsEntity::class), (ItemDTO::class)], version = 1)
 abstract class PersonsDatabase : RoomDatabase() {
 
     abstract fun getVipFavDao(): VipFavDao
+
+    abstract fun getCastDao(): CastDao
 
     companion object {
         private const val DB_NAME = "db"

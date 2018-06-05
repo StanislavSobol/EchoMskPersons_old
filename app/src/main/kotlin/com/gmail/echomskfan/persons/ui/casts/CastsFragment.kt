@@ -1,4 +1,4 @@
-package com.gmail.echomskfan.persons.ui.vips
+package com.gmail.echomskfan.persons.ui.casts
 
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -9,24 +9,25 @@ import android.view.ViewGroup
 import com.arellomobile.mvp.MvpFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.gmail.echomskfan.persons.MainActivity
 import com.gmail.echomskfan.persons.R
-import com.gmail.echomskfan.persons.data.VipVM
+import com.gmail.echomskfan.persons.data.CastVM
+import com.gmail.echomskfan.persons.utils.withArguments
 import kotlinx.android.synthetic.main.fragment_vips_list.*
 
-// TODO to base class - a fragment with RecyclerView
-class VipsFragment : MvpFragment(), IVipsView {
+
+class CastsFragment : MvpFragment(), ICastsView {
 
     @InjectPresenter
-    lateinit var presenter: VipsPresenter
+    lateinit var presenter: CastsPresenter
 
     @ProvidePresenter
-    fun providePresenter() = VipsPresenter()
+    fun providePresenter() = CastsPresenter()
 
-    private val adapter: VipsListAdapter by lazy { VipsListAdapter(activity, presenter) }
+    private val adapter: CastsListAdapter by lazy { CastsListAdapter(activity, presenter) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_vips_list, container, false)
+        presenter.setUrl(arguments.getString(EXTRA_URL))
+        return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -39,15 +40,12 @@ class VipsFragment : MvpFragment(), IVipsView {
         recyclerView.adapter = adapter
     }
 
-    override fun showVips(vips: List<VipVM>) {
-        adapter.addItems(vips)
-    }
-
-    override fun showVip(url: String) {
-        (activity as MainActivity).showVip(url)
+    override fun showCasts(casts: List<CastVM>) {
     }
 
     companion object {
-        fun newInstance() = VipsFragment()
+        const val EXTRA_URL = "EXTRA_URL"
+
+        fun newInstance(url: String) = CastsFragment().withArguments(EXTRA_URL to url)
     }
 }

@@ -46,7 +46,7 @@ class TestParserVips {
         val vips = parser.getVips(appContext)
         for (vip in vips) {
             Assert.assertTrue(vip.isValid())
-            val casts = parser.getCasts(vip.getFullUrl(), vip)
+            val casts = parser.getCasts(vip.getCastFullUrl(), vip)
             Assert.assertTrue(casts.isNotEmpty())
             casts.forEach { Assert.assertTrue(it.isValid()) }
         }
@@ -57,7 +57,7 @@ class TestParserVips {
         val vips = parser.getVips(appContext)
         for (vip in vips) {
             Assert.assertTrue(vip.isValid())
-            val casts = parser.getCasts(vip.getFullUrl(), vip)
+            val casts = parser.getCasts(vip.getCastFullUrl(), vip)
             Assert.assertTrue(casts.isNotEmpty())
 
             for (cast in casts) {
