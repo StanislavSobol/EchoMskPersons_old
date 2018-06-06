@@ -1,12 +1,11 @@
 package com.gmail.echomskfan.persons.ui
 
-import android.app.Activity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import com.arellomobile.mvp.MvpFragment
 import com.gmail.echomskfan.persons.R
 
-abstract class BaseActivity<out T : MvpFragment> : Activity() {
+abstract class BaseActivity<out T : BaseMvpFragment> : AppCompatActivity() {
 
     private val FRAGMENT_TAG = "FRAGMENT_TAG"
     private lateinit var fragment: T
@@ -19,10 +18,10 @@ abstract class BaseActivity<out T : MvpFragment> : Activity() {
 
     private fun setFragments(changingConf: Boolean) {
         if (changingConf) {
-            fragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG) as T
+            fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG) as T
         } else {
             fragment = createFragment()
-            fragmentManager.beginTransaction()
+            supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentHolder, fragment, FRAGMENT_TAG)
                     .commit()
         }

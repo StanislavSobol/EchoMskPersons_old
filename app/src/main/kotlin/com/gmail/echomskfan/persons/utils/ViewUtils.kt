@@ -11,15 +11,16 @@ import android.widget.EditText
 import android.widget.TextView
 import java.io.Serializable
 
+@Deprecated("Use support version instead")
 fun <T : Fragment> T.withArguments(vararg params: Pair<String, Any>): T {
     arguments = bundleOf(*params)
     return this
 }
 
-//fun <T : android.app.Fragment> T.withArguments(vararg params: Pair<String, Any>): T {
-//    arguments = bundleOf(*params)
-//    return this
-//}
+fun <T : android.support.v4.app.Fragment> T.withArguments(vararg params: Pair<String, Any>): T {
+    arguments = bundleOf(*params)
+    return this
+}
 
 fun <T : Intent> T.withArguments(vararg params: Pair<String, Any>): T {
     val bundle = bundleOf(*params)

@@ -10,9 +10,9 @@ class MainActivity : BaseActivity<VipsFragment>() {
 
     fun showVip(url: String) {
         val fragment = CastsFragment.newInstance(url)
-        fragmentManager.beginTransaction()
-                .add(R.id.fragmentHolder, fragment, "sdf")
-                .addToBackStack("sdf")
+        supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentHolder, fragment, CastsFragment.TAG)
+                .addToBackStack(CastsFragment.TAG)
                 .commit()
     }
 
