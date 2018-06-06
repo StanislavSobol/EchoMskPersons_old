@@ -19,7 +19,7 @@ class Interactor : IInteractor {
     @Inject
     lateinit var parser: IParser
 
-    override val castsUpdatedSubject: PublishSubject<Unit> = PublishSubject.create()
+    override val castsUpdatedSubject: PublishSubject<List<ItemDTO>> = PublishSubject.create()
 
     init {
         MApplication.getDaggerComponents().inject(this)
@@ -93,8 +93,7 @@ class Interactor : IInteractor {
                 if (castsListsAreDifferent(dbCasts, webCasts)) {
                     dao.clearForVipAndPage(castsUrl, pageNum)
                     webCasts.forEach { dao.insert(it) }
-
-                    castsUpdatedSubject.onNext(null)
+                    castsUpdatedSubject.onNext(webCasts)
                 }
 
                 it.onComplete()

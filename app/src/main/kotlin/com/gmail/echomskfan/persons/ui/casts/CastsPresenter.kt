@@ -10,7 +10,6 @@ import com.gmail.echomskfan.persons.interactor.IInteractor
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import com.gmail.echomskfan.persons.utils.fromIoToMain
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -31,28 +30,28 @@ class CastsPresenter : MvpPresenter<ICastsView>() {
         super.onFirstViewAttach()
         MApplication.getDaggerComponents().inject(this)
 
-        interactor.castsUpdatedSubject.subscribeOn(io.reactivex.schedulers.Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-        interactor.castsUpdatedSubject.fromIoToMain().subscribe(
-                {
-                    loadCastsFromDb(webRequest = false)
-                },
-                {
-                    ThrowableManager.process(it)
+        interactor.castsUpdatedSubject
+                .fromIoToMain()
+                .map {
+                    val vMs = mutableListOf<CastVM>()
+                    it.forEach { vMs.add(CastVM.fromEntity(it)) }
+                    vMs
                 }
-        )
+                .subscribe(
+                        { viewState.addItems(it) },
+                        { ThrowableManager.process(it) }
+                )
 
-        loadCastsFromDb(webRequest = true)
+        loadCastsFromDb()
     }
 
-    private fun loadCastsFromDb(webRequest: Boolean) {
+    private fun loadCastsFromDb() {
         loadCastsFromJsonToDbMappedToCastsVM(MApplication.getAppContext(), url, pageNum).fromIoToMain().subscribe(
                 {
                     viewState.addItems(it)
-                    if (webRequest) {
                         interactor.loadCastsFromWebToDbIfNeeded(MApplication.getAppContext(), url, pageNum)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe()
-                    }
                 },
                 {
                     ThrowableManager.process(it)
