@@ -1,8 +1,9 @@
 package com.gmail.echomskfan.persons.data
 
-interface IData {
-    companion object {
+object IData {
         const val MAIN_URL = "http://echo.msk.ru"
         const val URL_ARCHIVE_PATH = "/archive"
-    }
+
+    fun getCastFullUrl(shortUrl: String, pageNum: Int = 1) =
+            "${IData.MAIN_URL}$shortUrl${IData.URL_ARCHIVE_PATH}/$pageNum.html"
 }

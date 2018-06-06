@@ -25,23 +25,26 @@ data class VipVM(val url: String,
 
 data class CastVM(val fullTextURL: String,
                   val type: String,
-                  val subtype: String,
+                  val formattedDate: String,
                   val photoUrl: String,
                   val shortText: String,
                   val mp3Url: String,
                   val mp3Duration: Int,
-                  val fav: Boolean
+                  val pageNum: Int,
+                  var fav: Boolean
+
 ) {
     companion object {
         fun fromEntity(entity: ItemDTO) =
                 CastVM(
                         entity.fullTextURL,
                         entity.type,
-                        entity.subtype,
+                        entity.formattedDate,
                         entity.photoUrl,
                         entity.shortText,
                         entity.mp3Url,
                         entity.mp3Duration,
+                        entity.pageNum,
                         entity.fav
                 )
     }

@@ -9,7 +9,7 @@ interface IParser {
 
     fun getVips(context: Context): List<VipEntity>
 
-    fun getCasts(url: String, vipEntity: VipEntity): List<ItemDTO>
+    fun getCasts(fullUrl: String, vipEntity: VipEntity, pageNum: Int): List<ItemDTO>
 
-    fun getTextData(url: String): TextDTO?
+    fun getTextData(fullUrl: String): TextDTO?
 }

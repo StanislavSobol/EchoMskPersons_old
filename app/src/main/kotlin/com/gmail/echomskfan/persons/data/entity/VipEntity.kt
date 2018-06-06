@@ -3,7 +3,7 @@ package com.gmail.echomskfan.persons.data.entity
 import com.gmail.echomskfan.persons.data.IData
 
 data class VipEntity(
-        val url: String,
+        val url: String, // casts URL
         val firstName: String,
         val lastName: String,
         val profession: String,
@@ -12,5 +12,5 @@ data class VipEntity(
         var fav: Boolean = false,
         var notification: Boolean = false
 ) {
-    fun getCastFullUrl(pageNum: Int = 1) = "${IData.MAIN_URL}$url${IData.URL_ARCHIVE_PATH}/$pageNum.html"
+    fun getCastFullUrl(pageNum: Int = 1) = IData.getCastFullUrl(url, pageNum)
 }

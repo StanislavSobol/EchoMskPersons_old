@@ -45,13 +45,13 @@ class Parser : IParser {
     }
 
 
-    override fun getCasts(url: String, vipEntity: VipEntity): List<ItemDTO> {
-        if (url.isEmpty()) return listOf()
+    override fun getCasts(fullUrl: String, vipEntity: VipEntity, pageNum: Int): List<ItemDTO> {
+        if (fullUrl.isEmpty()) return listOf()
 
         val document: Document?
         try {
             try {
-                document = getDocument(url)
+                document = getDocument(fullUrl)
             } catch (e: IllegalArgumentException) {
                 ThrowableManager.process(e)
                 return listOf()
@@ -62,16 +62,16 @@ class Parser : IParser {
             return listOf()
         }
 
-        return document?.let { parseItems(document, vipEntity) } ?: listOf()
+        return document?.let { parseItems(document, vipEntity, pageNum) } ?: listOf()
     }
 
     @Throws(IOException::class)
-    private fun getDocument(url: String): Document? {
-        return Jsoup.connect(url).get()
+    private fun getDocument(fullUrl: String): Document? {
+        return Jsoup.connect(fullUrl).get()
     }
 
     @Synchronized
-    private fun parseItems(document: Document, vipEntity: VipEntity): List<ItemDTO> {
+    private fun parseItems(document: Document, vipEntity: VipEntity, pageNum: Int): List<ItemDTO> {
         val result = ArrayList<ItemDTO>()
         val divs = document.getElementsByTag("div")
         for (div in divs) {
@@ -188,18 +188,23 @@ class Parser : IParser {
 
                 val item = ItemDTO(
                         fullTextURL = fullTextURL,
+                        vipUrl = vipEntity.url,
                         type = type,
                         subtype = subtype,
                         photoUrl = photoURL,
                         shortText = shortText,
                         mp3Url = mp3Url,
                         mp3Duration = mp3Duration,
-                        formattedDate = formattedDate
+                        formattedDate = formattedDate,
+                        pageNum = pageNum
                 )
 
                 if (!result.contains(item)) {
                     if (!item.fullTextURL.isEmpty() || !item.mp3Url.isEmpty()) {
-                        result.add(item)
+                        result.find { it.fullTextURL == item.fullTextURL } ?: run {
+                            item.orderWithinPage = result.size
+                            result.add(item)
+                        }
                     }
                 }
             }
@@ -219,10 +224,10 @@ class Parser : IParser {
         return json
     }
 
-     override fun getTextData(url: String): TextDTO? {
+    override fun getTextData(fullUrl: String): TextDTO? {
         var result: TextDTO? = null
 
-        getDocument(url)?.let {
+        getDocument(fullUrl)?.let {
             try {
                 result = parseText(it)
             } catch (e: IndexOutOfBoundsException) {
@@ -252,7 +257,7 @@ class Parser : IParser {
 
         for (div in divs) {
             if (div.className() == "typical dialog _ga1_on_ contextualizable include-relap-widget" ||
-                    div.className() ==     "typical  _ga1_on_ contextualizable include-relap-widget") {
+                    div.className() == "typical  _ga1_on_ contextualizable include-relap-widget") {
                 val all = div.allElements
                 for (each in all) {
                     if (each.getElementsByTag("div").size > 0) {
