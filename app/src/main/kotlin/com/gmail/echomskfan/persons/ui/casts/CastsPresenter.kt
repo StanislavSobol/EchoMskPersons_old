@@ -3,10 +3,10 @@ package com.gmail.echomskfan.persons.ui.casts
 import android.content.Context
 import android.support.annotation.VisibleForTesting
 import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.gmail.echomskfan.persons.MApplication
 import com.gmail.echomskfan.persons.data.CastVM
 import com.gmail.echomskfan.persons.interactor.IInteractor
+import com.gmail.echomskfan.persons.ui.BasePresenter
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import com.gmail.echomskfan.persons.utils.fromIoToMain
 import io.reactivex.Single
@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 @InjectViewState
-class CastsPresenter : MvpPresenter<ICastsView>() {
+class CastsPresenter : BasePresenter<ICastsView>() {
 
     @Inject
     lateinit var interactor: IInteractor
@@ -41,22 +41,26 @@ class CastsPresenter : MvpPresenter<ICastsView>() {
                         { viewState.addItems(it) },
                         { ThrowableManager.process(it) }
                 )
+                .unsubscribeOnDestroy()
 
         loadCastsFromDb()
     }
 
     private fun loadCastsFromDb() {
-        loadCastsFromJsonToDbMappedToCastsVM(MApplication.getAppContext(), url, pageNum).fromIoToMain().subscribe(
-                {
-                    viewState.addItems(it)
-                        interactor.loadCastsFromWebToDbIfNeeded(MApplication.getAppContext(), url, pageNum)
-                                .subscribeOn(Schedulers.io())
-                                .subscribe()
-                },
-                {
-                    ThrowableManager.process(it)
-                }
-        )
+        loadCastsFromJsonToDbMappedToCastsVM(MApplication.getAppContext(), url, pageNum)
+                .fromIoToMain()
+                .subscribe(
+                        {
+                            viewState.addItems(it)
+                            interactor.loadCastsFromWebToDbIfNeeded(MApplication.getAppContext(), url, pageNum)
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe()
+                        },
+                        {
+                            ThrowableManager.process(it)
+                        }
+                )
+                .unsubscribeOnDestroy()
     }
 
 
@@ -79,5 +83,6 @@ class CastsPresenter : MvpPresenter<ICastsView>() {
                 }, {
                     ThrowableManager.process(it)
                 })
+                .unsubscribeOnDestroy()
     }
 }
