@@ -24,12 +24,12 @@ class VipsFragment : BaseRecyclerViewMvpFragment(), IVipsView {
         recyclerView.adapter = adapter
     }
 
-    override fun showVips(vips: List<VipVM>) {
-        adapter.addItems(vips)
+    override fun addItems(items: List<VipVM>) {
+        adapter.addItems(items)
     }
 
-    override fun showVip(url: String) {
-        (activity as MainActivity).showVip(url)
+    override fun showCast(url: String) {
+        (activity as MainActivity).showCast(url)
     }
 
     override fun updateItem(item: VipVM) {

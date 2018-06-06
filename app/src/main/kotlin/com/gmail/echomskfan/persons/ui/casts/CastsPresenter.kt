@@ -47,7 +47,7 @@ class CastsPresenter : MvpPresenter<ICastsView>() {
     private fun loadCastsFromDb(webRequest: Boolean) {
         loadCastsFromJsonToDbMappedToCastsVM(MApplication.getAppContext(), url, pageNum).fromIoToMain().subscribe(
                 {
-                    viewState.showCasts(it)
+                    viewState.addItems(it)
                     if (webRequest) {
                         interactor.loadCastsFromWebToDbIfNeeded(MApplication.getAppContext(), url, pageNum)
                                 .subscribeOn(Schedulers.io())

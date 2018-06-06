@@ -26,8 +26,8 @@ class CastsFragment : BaseRecyclerViewMvpFragment(), ICastsView {
         presenter.setUrl(arguments!!.getString(EXTRA_URL))
     }
 
-    override fun showCasts(casts: List<CastVM>) {
-        adapter.addItems(casts)
+    override fun addItems(items: List<CastVM>) {
+        adapter.addItems(items)
     }
 
     override fun updateItem(item: CastVM) {

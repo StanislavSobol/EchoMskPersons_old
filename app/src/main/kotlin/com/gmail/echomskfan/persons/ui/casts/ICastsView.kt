@@ -8,7 +8,7 @@ import com.gmail.echomskfan.persons.data.CastVM
 interface ICastsView : MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun showCasts(casts: List<CastVM>)
+    fun addItems(items: List<CastVM>)
 
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun updateItem(item: CastVM)

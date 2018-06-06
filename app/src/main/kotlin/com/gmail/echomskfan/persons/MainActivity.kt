@@ -8,7 +8,7 @@ class MainActivity : BaseActivity<VipsFragment>() {
 
     override fun createFragment() = VipsFragment.newInstance()
 
-    fun showVip(url: String) {
+    fun showCast(url: String) {
         val fragment = CastsFragment.newInstance(url)
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragmentHolder, fragment, CastsFragment.TAG)

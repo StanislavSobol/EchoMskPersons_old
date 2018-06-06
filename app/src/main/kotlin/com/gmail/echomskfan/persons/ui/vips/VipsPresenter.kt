@@ -32,7 +32,7 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
         compositeDisposable.add(
                 loadVipsFromJsonToDbMappedToVipsVM()
                         .subscribe(
-                                { viewState.showVips(it) },
+                                { viewState.addItems(it) },
                                 { ThrowableManager.process(it) }
                         )
         )
@@ -72,7 +72,7 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
     }
 
     fun itemClicked(item: VipVM) {
-        viewState.showVip(item.url)
+        viewState.showCast(item.url)
     }
 
     override fun onDestroy() {
