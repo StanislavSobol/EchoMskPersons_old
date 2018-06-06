@@ -32,7 +32,7 @@ class Interactor : IInteractor {
                 vips.forEach {
                     val dao = PersonsDatabase.getInstance(appContext).getVipFavDao()
                     dao.insert(VipDetailsEntity(it.url))
-                    val vipDetails = dao.getByPk(it.url)
+                    val vipDetails = dao.getById(it.url)
                     vipDetails?.run {
                         it.fav = vipDetails.fav
                         it.notification = vipDetails.notification
@@ -49,7 +49,7 @@ class Interactor : IInteractor {
     override fun switchVipNotificationById(appContext: Context, url: String, oldNotification: Boolean): Completable {
         return Completable.create {
             try {
-                PersonsDatabase.getInstance(appContext).getVipFavDao().setNotificationByPk(url, !oldNotification)
+                PersonsDatabase.getInstance(appContext).getVipFavDao().setNotificationById(url, !oldNotification)
                 it.onComplete()
             } catch (t: Throwable) {
                 ThrowableManager.process(t)
@@ -61,7 +61,7 @@ class Interactor : IInteractor {
     override fun switchVipFavById(appContext: Context, url: String, oldFav: Boolean): Completable {
         return Completable.create {
             try {
-                PersonsDatabase.getInstance(appContext).getVipFavDao().setFavByPk(url, !oldFav)
+                PersonsDatabase.getInstance(appContext).getVipFavDao().setFavById(url, !oldFav)
                 it.onComplete()
             } catch (t: Throwable) {
                 ThrowableManager.process(t)
@@ -74,19 +74,6 @@ class Interactor : IInteractor {
         return Single.create {
             try {
                 val casts = PersonsDatabase.getInstance(appContext).getCastDao().getForVipAndPage(vipUrl, pageNum)
-                it.onSuccess(casts)
-            } catch (t: Throwable) {
-                ThrowableManager.process(t)
-                it.onError(t)
-            }
-        }
-    }
-
-    override fun loadCastsFromWeb(appContext: Context, url: String, pageNum: Int): Single<List<ItemDTO>> {
-        return Single.create {
-            try {
-                val vip = parser.getVips(appContext).find { it.url == url }
-                val casts = parser.getCasts(IData.getCastFullUrl(url, pageNum), vip!!, pageNum)
                 it.onSuccess(casts)
             } catch (t: Throwable) {
                 ThrowableManager.process(t)
@@ -134,15 +121,16 @@ class Interactor : IInteractor {
         return false
     }
 
-
-    //    override fun loadCasts(appContext: Context, url: String, pageNum: Int): Single<List<ItemDTO>> {
-//        val dbCasts = PersonsDatabase.getInstance(appContext).getCastDao().getForVipAndPage(url, pageNum)
-//        val vip = parser.getVips(appContext).find { it.url == url }
-//        val webCasts = parser.getCasts(IData.getCastFullUrl(url, pageNum), vip!!)
-//
-//        if (castsListsAreDifferent(dbCasts, webCasts)) {
-//
-//        }
-//    }
+    override fun switchCastFavById(appContext: Context, fullTextUrl: String, oldFav: Boolean): Completable {
+        return Completable.create {
+            try {
+                PersonsDatabase.getInstance(appContext).getCastDao().setFavById(fullTextUrl, !oldFav)
+                it.onComplete()
+            } catch (t: Throwable) {
+                ThrowableManager.process(t)
+                it.onError(t)
+            }
+        }
+    }
 }
 

@@ -23,4 +23,8 @@ interface CastDao {
             " WHERE " + ItemDTO.FIELD_VIP_URL + " = :castsUrl AND " + ItemDTO.FIELD_PAGE_NUM + " = :pageNum")
     fun clearForVipAndPage(castsUrl: String, pageNum: Int)
 
+    @Query("UPDATE " + ItemDTO.TABLE +
+            " SET " + ItemDTO.FIELD_FAV + " = :fav" +
+            " WHERE " + ItemDTO.FIELD_FULL_TEXT_URL + " = :fullTextUrl")
+    fun setFavById(fullTextUrl: String, fav: Boolean)
 }

@@ -17,10 +17,6 @@ interface IInteractor {
     fun switchVipFavById(appContext: Context, url: String, oldFav: Boolean): Completable
 
     fun loadCastsFromDb(appContext: Context, vipUrl: String, pageNum: Int): Single<List<ItemDTO>>
-    @Deprecated("loadCastsFromWebToDbIfNeeded")
-    fun loadCastsFromWeb(appContext: Context, url: String, pageNum: Int): Single<List<ItemDTO>>
-
     fun loadCastsFromWebToDbIfNeeded(appContext: Context, castsUrl: String, pageNum: Int): Completable
-
-    // fun loadCasts(appContext: Context, url: String, pageNum: Int): Single<List<ItemDTO>>
+    fun switchCastFavById(appContext: Context, fullTextUrl: String, oldFav: Boolean): Completable
 }

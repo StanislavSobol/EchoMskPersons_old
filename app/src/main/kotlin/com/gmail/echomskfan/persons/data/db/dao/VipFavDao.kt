@@ -16,15 +16,15 @@ interface VipFavDao {
     fun insert(vipDetailsEntity: VipDetailsEntity)
 
     @Query("SELECT * FROM " + VipDetailsEntity.TABLE + " WHERE " + VipDetailsEntity.FIELD_URL + " = :url")
-    fun getByPk(url: String): VipDetailsEntity?
+    fun getById(url: String): VipDetailsEntity?
 
     @Query("UPDATE " + VipDetailsEntity.TABLE +
             " SET " + VipDetailsEntity.FIELD_NOTIFICATION + " = :notification" +
             " WHERE " + VipDetailsEntity.FIELD_URL + " = :url")
-    fun setNotificationByPk(url: String, notification: Boolean)
+    fun setNotificationById(url: String, notification: Boolean)
 
     @Query("UPDATE " + VipDetailsEntity.TABLE +
             " SET " + VipDetailsEntity.FIELD_FAV + " = :fav" +
             " WHERE " + VipDetailsEntity.FIELD_URL + " = :url")
-    fun setFavByPk(url: String, fav: Boolean)
+    fun setFavById(url: String, fav: Boolean)
 }

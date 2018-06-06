@@ -99,7 +99,7 @@ class TestVips {
         val vips = dao.getAll()
         assertEquals(vips.size, VIPS_AMOUNT)
         vips.forEach {
-            assertEquals(dao.getByPk(it.url), it)
+            assertEquals(dao.getById(it.url), it)
         }
     }
 
@@ -115,7 +115,7 @@ class TestVips {
 
         interactor.switchVipNotificationById(appContext, vip.url, vip.notification).subscribe()
 
-        assertNotEquals(oldNotification, dao.getByPk(vip.url)?.notification)
+        assertNotEquals(oldNotification, dao.getById(vip.url)?.notification)
     }
 
     @Test
@@ -130,7 +130,7 @@ class TestVips {
 
         interactor.switchVipFavById(appContext, vip.url, vip.fav).subscribe()
 
-        assertNotEquals(oldFav, dao.getByPk(vip.url)?.fav)
+        assertNotEquals(oldFav, dao.getById(vip.url)?.fav)
     }
 
     @After

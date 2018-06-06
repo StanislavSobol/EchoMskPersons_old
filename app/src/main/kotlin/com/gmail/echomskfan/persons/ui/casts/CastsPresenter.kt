@@ -6,11 +6,10 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.gmail.echomskfan.persons.MApplication
 import com.gmail.echomskfan.persons.data.CastVM
-import com.gmail.echomskfan.persons.data.ItemDTO
-import com.gmail.echomskfan.persons.data.db.PersonsDatabase
 import com.gmail.echomskfan.persons.interactor.IInteractor
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import com.gmail.echomskfan.persons.utils.fromIoToMain
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -62,71 +61,6 @@ class CastsPresenter : MvpPresenter<ICastsView>() {
         )
     }
 
-    private fun loadCastsFromDb_old() {
-        var dbItems = listOf<ItemDTO>()
-        interactor.loadCastsFromDb(MApplication.getAppContext(), url, pageNum)
-                .map {
-                    dbItems = it
-                    val vMs = mutableListOf<CastVM>()
-                    it.forEach { vMs.add(CastVM.fromEntity(it)) }
-                    vMs
-                }
-                .fromIoToMain()
-                .subscribe(
-                        {
-                            viewState.showCasts(it)
-                            interactor.loadCastsFromWeb(MApplication.getAppContext(), url, pageNum)
-                                    .subscribe(
-                                            {
-                                                if (listAreDifferent(dbItems, it)) {
-                                                    val vMs = mutableListOf<CastVM>()
-                                                    it.forEach { vMs.add(CastVM.fromEntity(it)) }
-                                                    viewState.showCasts(vMs)
-
-                                                    PersonsDatabase.getInstance(MApplication.getAppContext()).getCastDao()
-
-
-                                                }
-                                            },
-                                            {
-                                                ThrowableManager.process(it)
-                                            }
-                                    )
-                        },
-                        {
-                            ThrowableManager.process(it)
-                        })
-
-        /*
-        loadCastsFromJsonToDbMappedToCastsVM(MApplication.getAppContext(), url, pageNum)
-                .fromIoToMain()
-                .subscribe(
-                        {
-                            viewState.showCasts(it)
-
-                         //   val webItems = interactor.loadCastsFromWeb(MApplication.getAppContext(), url, pageNum)
-
-
-//                            loadCastsFromWebMappedToCastsVM(MApplication.getAppContext(), url, pageNum)
-//                                    .fromIoToMain()
-//                                    // interactor.loadCastsFromWeb(MApplication.getAppContext(), url, pageNum)
-//                                    .subscribe(
-//                                            {
-//                                                viewState.showCasts(it)
-//                                            },
-//                                            {
-//                                                ThrowableManager.process(it)
-//                                            })
-                        },
-                        {
-                            ThrowableManager.process(it)
-                        })
-        */
-    }
-
-    private fun listAreDifferent(dbItems: List<ItemDTO>, webItems: List<ItemDTO>?): Boolean {
-        return true
-    }
 
     @VisibleForTesting
     fun loadCastsFromJsonToDbMappedToCastsVM(appContext: Context, url: String, pageNum: Int): Single<List<CastVM>> {
@@ -138,13 +72,7 @@ class CastsPresenter : MvpPresenter<ICastsView>() {
                 }
     }
 
-    @VisibleForTesting
-    fun loadCastsFromWebMappedToCastsVM(appContext: Context, url: String, pageNum: Int): Single<List<CastVM>> {
-        return interactor.loadCastsFromWeb(MApplication.getAppContext(), url, pageNum)
-                .map {
-                    val vMs = mutableListOf<CastVM>()
-                    it.forEach { vMs.add(CastVM.fromEntity(it)) }
-                    vMs
-                }
+    fun itemFavIconClicked(item: CastVM): Completable {
+        return interactor.switchCastFavById(MApplication.getAppContext(), item.fullTextURL, item.fav)
     }
 }
