@@ -30,6 +30,10 @@ class CastsFragment : BaseRecyclerViewMvpFragment(), ICastsView {
         adapter.addItems(casts)
     }
 
+    override fun updateItem(item: CastVM) {
+        adapter.updateItem(item)
+    }
+
     companion object {
         const val TAG = "CASTS_FRAGMENT_TAG"
         const val EXTRA_URL = "EXTRA_URL"

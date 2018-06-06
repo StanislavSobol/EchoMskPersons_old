@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.gmail.echomskfan.persons.R
 import com.gmail.echomskfan.persons.data.CastVM
 import com.gmail.echomskfan.persons.utils.StringUtils
-import com.gmail.echomskfan.persons.utils.fromIoToMain
 import com.gmail.echomskfan.persons.utils.makeGone
 import com.gmail.echomskfan.persons.utils.makeVisible
 import kotlinx.android.synthetic.main.item_cast.view.*
@@ -39,6 +38,11 @@ class CastsListAdapter(private val context: Context, private val presenter: Cast
         notifyDataSetChanged()
     }
 
+    fun updateItem(item: CastVM) {
+        items.find { item.fullTextURL == it.fullTextURL }?.fav = item.fav
+        notifyDataSetChanged()
+    }
+
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun setItem(item: CastVM) {
@@ -63,12 +67,8 @@ class CastsListAdapter(private val context: Context, private val presenter: Cast
             )
 
             itemView.item_content_favorite_image_view.setOnClickListener {
-                presenter.itemFavIconClicked(item).fromIoToMain().subscribe {
-                    item.fav = !item.fav
-                    notifyDataSetChanged()
-                }
+                presenter.itemFavIconClicked(item)
             }
-
         }
     }
 }

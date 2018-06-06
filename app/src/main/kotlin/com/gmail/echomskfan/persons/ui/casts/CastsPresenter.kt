@@ -9,7 +9,6 @@ import com.gmail.echomskfan.persons.data.CastVM
 import com.gmail.echomskfan.persons.interactor.IInteractor
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import com.gmail.echomskfan.persons.utils.fromIoToMain
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -72,7 +71,14 @@ class CastsPresenter : MvpPresenter<ICastsView>() {
                 }
     }
 
-    fun itemFavIconClicked(item: CastVM): Completable {
-        return interactor.switchCastFavById(MApplication.getAppContext(), item.fullTextURL, item.fav)
+    fun itemFavIconClicked(item: CastVM) {
+        interactor.switchCastFavById(MApplication.getAppContext(), item.fullTextURL, item.fav)
+                .fromIoToMain()
+                .subscribe({
+                    item.fav = !item.fav
+                    viewState.updateItem(item)
+                }, {
+                    ThrowableManager.process(it)
+                })
     }
 }

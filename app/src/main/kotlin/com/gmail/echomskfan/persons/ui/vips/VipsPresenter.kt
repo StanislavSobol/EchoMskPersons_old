@@ -8,7 +8,6 @@ import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.interactor.IInteractor
 import com.gmail.echomskfan.persons.utils.ThrowableManager
 import com.gmail.echomskfan.persons.utils.fromIoToMain
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -32,10 +31,10 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
         compositeDisposable.clear()
         compositeDisposable.add(
                 loadVipsFromJsonToDbMappedToVipsVM()
-                .subscribe(
-                        { viewState.showVips(it) },
-                        { ThrowableManager.process(it) }
-                )
+                        .subscribe(
+                                { viewState.showVips(it) },
+                                { ThrowableManager.process(it) }
+                        )
         )
     }
 
@@ -50,12 +49,26 @@ class VipsPresenter : MvpPresenter<IVipsView>() {
                 .fromIoToMain()
     }
 
-    fun itemNotificationIconClicked(item: VipVM): Completable {
-        return interactor.switchVipNotificationById(MApplication.getAppContext(), item.url, item.notification)
+    fun itemNotificationIconClicked(item: VipVM) {
+        interactor.switchVipNotificationById(MApplication.getAppContext(), item.url, item.notification)
+                .fromIoToMain()
+                .subscribe({
+                    item.notification = !item.notification
+                    viewState.updateItem(item)
+                }, {
+                    ThrowableManager.process(it)
+                })
     }
 
-    fun itemFavIconClicked(item: VipVM): Completable {
-        return interactor.switchVipFavById(MApplication.getAppContext(), item.url, item.fav)
+    fun itemFavIconClicked(item: VipVM) {
+        interactor.switchVipFavById(MApplication.getAppContext(), item.url, item.fav)
+                .fromIoToMain()
+                .subscribe({
+                    item.fav = !item.fav
+                    viewState.updateItem(item)
+                }, {
+                    ThrowableManager.process(it)
+                })
     }
 
     fun itemClicked(item: VipVM) {

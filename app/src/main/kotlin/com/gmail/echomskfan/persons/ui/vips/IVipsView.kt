@@ -12,4 +12,7 @@ interface IVipsView : MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun showVip(url: String)
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun updateItem(item: VipVM)
 }

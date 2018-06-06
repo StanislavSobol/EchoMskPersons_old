@@ -32,6 +32,10 @@ class VipsFragment : BaseRecyclerViewMvpFragment(), IVipsView {
         (activity as MainActivity).showVip(url)
     }
 
+    override fun updateItem(item: VipVM) {
+        adapter.updateItem(item)
+    }
+
     companion object {
         fun newInstance() = VipsFragment()
     }

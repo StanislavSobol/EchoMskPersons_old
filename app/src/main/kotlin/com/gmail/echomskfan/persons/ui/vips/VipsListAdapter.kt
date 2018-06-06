@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.gmail.echomskfan.persons.R
 import com.gmail.echomskfan.persons.data.VipVM
 import com.gmail.echomskfan.persons.utils.PicassoFilteredLoader
-import com.gmail.echomskfan.persons.utils.fromIoToMain
 import kotlinx.android.synthetic.main.vip_item.view.*
 
 class VipsListAdapter(private val context: Context, private val presenter: VipsPresenter) : RecyclerView.Adapter<VipsListAdapter.Holder>() {
@@ -32,6 +31,14 @@ class VipsListAdapter(private val context: Context, private val presenter: VipsP
         notifyDataSetChanged()
     }
 
+    fun updateItem(item: VipVM) {
+        items.find { it.url == item.url }?.run {
+            fav = item.fav
+            notification = item.notification
+        }
+        notifyDataSetChanged()
+    }
+
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun setItem(vipVM: VipVM) {
             itemView.vipItemNameTextView.text = vipVM.name
@@ -45,10 +52,7 @@ class VipsListAdapter(private val context: Context, private val presenter: VipsP
             )
 
             itemView.vipItemNotificationImageView.setOnClickListener {
-                presenter.itemNotificationIconClicked(vipVM).fromIoToMain().subscribe {
-                    vipVM.notification = !vipVM.notification
-                    notifyDataSetChanged()
-                }
+                presenter.itemNotificationIconClicked(vipVM)
             }
 
             itemView.vipItemFavImageView.setImageResource(
@@ -57,10 +61,7 @@ class VipsListAdapter(private val context: Context, private val presenter: VipsP
             )
 
             itemView.vipItemFavImageView.setOnClickListener {
-                presenter.itemFavIconClicked(vipVM).fromIoToMain().subscribe {
-                    vipVM.fav = !vipVM.fav
-                    notifyDataSetChanged()
-                }
+                presenter.itemFavIconClicked(vipVM)
             }
 
             itemView.setOnClickListener {

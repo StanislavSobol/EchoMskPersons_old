@@ -9,4 +9,7 @@ interface ICastsView : MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun showCasts(casts: List<CastVM>)
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun updateItem(item: CastVM)
 }
