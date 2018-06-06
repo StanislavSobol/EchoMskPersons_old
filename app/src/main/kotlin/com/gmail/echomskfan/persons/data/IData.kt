@@ -1,7 +1,7 @@
 package com.gmail.echomskfan.persons.data
 
 object IData {
-        const val MAIN_URL = "http://echo.msk.ru"
+    const val MAIN_URL = "https://echo.msk.ru"
         const val URL_ARCHIVE_PATH = "/archive"
 
     fun getCastFullUrl(shortUrl: String, pageNum: Int = 1) =

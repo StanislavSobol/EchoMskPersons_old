@@ -3,6 +3,7 @@ package com.gmail.echomskfan.persons.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.ImageView
 import com.gmail.echomskfan.persons.MApplication
 import com.squareup.picasso.NetworkPolicy
@@ -17,6 +18,7 @@ object PicassoFilteredLoader {
             }
 
             override fun onBitmapFailed(errorDrawable: Drawable?) {
+                Log.d("SSS", "PicassoFilteredLoader :: onBitmapFailed url = $url")
             }
 
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {

@@ -25,6 +25,7 @@ data class VipVM(val url: String,
 
 data class CastVM(val fullTextURL: String,
                   val type: String,
+                  val subtype: String,
                   val formattedDate: String,
                   val photoUrl: String,
                   val shortText: String,
@@ -34,11 +35,20 @@ data class CastVM(val fullTextURL: String,
                   var fav: Boolean
 
 ) {
+    fun getTypeSubtype(): String {
+        var result = type
+        if (!subtype.isEmpty()) {
+            result += " / $subtype"
+        }
+        return result
+    }
+
     companion object {
         fun fromEntity(entity: ItemDTO) =
                 CastVM(
                         entity.fullTextURL,
                         entity.type,
+                        entity.subtype,
                         entity.formattedDate,
                         entity.photoUrl,
                         entity.shortText,

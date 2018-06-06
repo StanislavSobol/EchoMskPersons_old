@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.gmail.echomskfan.persons.R
 import com.gmail.echomskfan.persons.data.CastVM
+import com.gmail.echomskfan.persons.data.IData
+import com.gmail.echomskfan.persons.utils.PicassoFilteredLoader
 import com.gmail.echomskfan.persons.utils.StringUtils
 import com.gmail.echomskfan.persons.utils.makeGone
 import com.gmail.echomskfan.persons.utils.makeVisible
@@ -46,7 +48,9 @@ class CastsListAdapter(private val context: Context, private val presenter: Cast
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun setItem(item: CastVM) {
-            itemView.item_content_type_text_view.text = item.type
+            PicassoFilteredLoader.load(context, IData.MAIN_URL + item.photoUrl, itemView.item_content_image_view)
+
+            itemView.item_content_type_text_view.text = item.getTypeSubtype()
             itemView.item_content_date_text_view.text = item.formattedDate
             itemView.item_content_short_text_view.text = item.shortText
 
