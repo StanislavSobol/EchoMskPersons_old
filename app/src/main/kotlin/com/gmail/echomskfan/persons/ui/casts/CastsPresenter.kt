@@ -19,24 +19,17 @@ class CastsPresenter : BasePresenter<ICastsView>() {
     @Inject
     lateinit var interactor: IInteractor
 
-    private lateinit var url: String
     private var pageNum: Int = 1
 
-    fun setUrl(url: String) {
-        this.url = url
-    }
+    var url: String = ""
 
-    override fun onFirstViewAttach() {
+    public override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         MApplication.getDaggerComponents().inject(this)
 
         interactor.castsUpdatedSubject
                 .fromIoToMain()
-                .map {
-                    val vMs = mutableListOf<CastVM>()
-                    it.forEach { vMs.add(CastVM.fromEntity(it)) }
-                    vMs
-                }
+                .map { CastVM.fromEntitiesList(it) }
                 .subscribe(
                         { viewState.addItems(it) },
                         { ThrowableManager.process(it) }
@@ -47,8 +40,7 @@ class CastsPresenter : BasePresenter<ICastsView>() {
     }
 
     private fun loadCastsFromDb() {
-        loadCastsFromJsonToDbMappedToCastsVM(MApplication.getAppContext(), url, pageNum)
-                .fromIoToMain()
+        loadCastsFromWebToDbMappedToCastsVM(MApplication.getAppContext(), pageNum)
                 .subscribe(
                         {
                             viewState.addItems(it)
@@ -65,13 +57,10 @@ class CastsPresenter : BasePresenter<ICastsView>() {
 
 
     @VisibleForTesting
-    fun loadCastsFromJsonToDbMappedToCastsVM(appContext: Context, url: String, pageNum: Int): Single<List<CastVM>> {
+    fun loadCastsFromWebToDbMappedToCastsVM(appContext: Context, pageNum: Int): Single<List<CastVM>> {
         return interactor.loadCastsFromDb(appContext, url, pageNum)
-                .map {
-                    val vMs = mutableListOf<CastVM>()
-                    it.forEach { vMs.add(CastVM.fromEntity(it)) }
-                    vMs
-                }
+                .map { CastVM.fromEntitiesList(it) }
+                .fromIoToMain()
     }
 
     fun itemFavIconClicked(item: CastVM) {

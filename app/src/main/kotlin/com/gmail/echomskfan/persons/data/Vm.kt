@@ -38,12 +38,19 @@ data class CastVM(val fullTextURL: String,
     fun getTypeSubtype(): String {
         var result = type
         if (!subtype.isEmpty()) {
-            result += " / $subtype"
+            result += ": $subtype"
         }
         return result
     }
 
     companion object {
+
+        fun fromEntitiesList(casts: List<ItemDTO>): List<CastVM> {
+            val result = mutableListOf<CastVM>()
+            casts.forEach { result.add(CastVM.fromEntity(it)) }
+            return result.toList()
+        }
+
         fun fromEntity(entity: ItemDTO) =
                 CastVM(
                         entity.fullTextURL,
