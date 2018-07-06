@@ -23,17 +23,20 @@ class CastsListAdapter(private val context: Context, private val presenter: Cast
         return Holder(LayoutInflater.from(parent.context).inflate(layout, parent, false))
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (items[position].isProgressBar) PROGRESS_BAR else REGULAR
-    }
+    override fun getItemViewType(position: Int) = if (items[position].isProgressBar) PROGRESS_BAR else REGULAR
 
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.setItem(items[position])
+        if (items[position].isProgressBar) {
+            presenter.onListProgressBarShown()
+        }
     }
 
     fun addItems(newItems: List<CastVM>) {
+        items.remove(items.find { it.isProgressBar })
+
         newItems.forEach {
             val newItem = it
             items.filter { !it.isProgressBar }.find { newItem.fullTextURL == it.fullTextURL }?.let { items.remove(it) }
@@ -47,6 +50,11 @@ class CastsListAdapter(private val context: Context, private val presenter: Cast
 
     fun updateItem(item: CastVM) {
         items.filter { !it.isProgressBar }.find { item.fullTextURL == it.fullTextURL }?.fav = item.fav
+        notifyDataSetChanged()
+    }
+
+    fun removeProgressBar() {
+        items.remove(items.find { it.isProgressBar })
         notifyDataSetChanged()
     }
 

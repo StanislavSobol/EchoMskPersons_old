@@ -31,10 +31,18 @@ class CastsPresenter : BasePresenter<ICastsView>() {
                 .fromIoToMain()
                 .map { CastVM.fromEntitiesList(it) }
                 .subscribe(
-                        { viewState.addItems(it) },
+                        {
+                            if (it.isNotEmpty()) {
+                                viewState.addItems(it)
+                            }
+                        },
                         { ThrowableManager.process(it) }
                 )
                 .unsubscribeOnDestroy()
+
+        interactor.castsOverSubject
+                .fromIoToMain()
+                .subscribe { viewState.removeListProgressBar() }
 
         loadCastsFromDb()
     }
@@ -43,7 +51,9 @@ class CastsPresenter : BasePresenter<ICastsView>() {
         loadCastsFromWebToDbMappedToCastsVM(MApplication.getAppContext(), pageNum)
                 .subscribe(
                         {
-                            viewState.addItems(it)
+                            if (it.isNotEmpty()) {
+                                viewState.addItems(it)
+                            }
                             interactor.loadCastsFromWebToDbIfNeeded(MApplication.getAppContext(), url, pageNum)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe()
@@ -73,5 +83,10 @@ class CastsPresenter : BasePresenter<ICastsView>() {
                     ThrowableManager.process(it)
                 })
                 .unsubscribeOnDestroy()
+    }
+
+    fun onListProgressBarShown() {
+        pageNum++
+        loadCastsFromDb()
     }
 }

@@ -10,6 +10,7 @@ import io.reactivex.subjects.PublishSubject
 
 interface IInteractor {
 
+    val castsOverSubject: PublishSubject<Boolean>
     val castsUpdatedSubject: PublishSubject<List<ItemDTO>>
 
     fun copyVipsFromJsonToDb(appContext: Context): Single<List<VipEntity>>

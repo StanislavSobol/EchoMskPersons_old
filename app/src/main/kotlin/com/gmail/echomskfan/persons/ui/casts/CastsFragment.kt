@@ -33,6 +33,10 @@ class CastsFragment : BaseRecyclerViewMvpFragment(), ICastsView {
         adapter.updateItem(item)
     }
 
+    override fun removeListProgressBar() {
+        adapter.removeProgressBar()
+    }
+
     companion object {
         const val TAG = "CASTS_FRAGMENT_TAG"
         const val EXTRA_URL = "EXTRA_URL"

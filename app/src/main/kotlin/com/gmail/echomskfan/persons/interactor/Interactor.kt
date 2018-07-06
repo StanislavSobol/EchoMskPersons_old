@@ -19,6 +19,7 @@ class Interactor : IInteractor {
     @Inject
     lateinit var parser: IParser
 
+    override val castsOverSubject: PublishSubject<Boolean> = PublishSubject.create()
     override val castsUpdatedSubject: PublishSubject<List<ItemDTO>> = PublishSubject.create()
 
     init {
@@ -90,7 +91,9 @@ class Interactor : IInteractor {
                 val vip = parser.getVips(appContext).find { it.url == castsUrl }
                 val webCasts = parser.getCasts(IData.getCastFullUrl(castsUrl, pageNum), vip!!, pageNum)
 
-                if (castsListsAreDifferent(dbCasts, webCasts)) {
+                if (webCasts.isEmpty()) {
+                    castsOverSubject.onNext(true)
+                } else if (castsListsAreDifferent(dbCasts, webCasts)) {
                     dao.clearForVipAndPage(castsUrl, pageNum)
                     webCasts.forEach { dao.insert(it) }
                     castsUpdatedSubject.onNext(webCasts)
