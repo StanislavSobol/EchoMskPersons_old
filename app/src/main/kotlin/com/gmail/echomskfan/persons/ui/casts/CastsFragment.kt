@@ -9,7 +9,6 @@ import com.gmail.echomskfan.persons.ui.BaseRecyclerViewMvpFragment
 import com.gmail.echomskfan.persons.utils.withArguments
 import kotlinx.android.synthetic.main.fragment_list.*
 
-
 class CastsFragment : BaseRecyclerViewMvpFragment(), ICastsView {
 
     @InjectPresenter

@@ -32,9 +32,13 @@ data class CastVM(val fullTextURL: String,
                   val mp3Url: String,
                   val mp3Duration: Int,
                   val pageNum: Int,
-                  var fav: Boolean
+                  var fav: Boolean,
+                  val isProgressBar: Boolean = false
 
 ) {
+
+    constructor(isProgressBar: Boolean) : this("", "", "", "", "", "", "", 0, 0, false, isProgressBar)
+
     fun getTypeSubtype(): String {
         var result = type
         if (!subtype.isEmpty()) {
