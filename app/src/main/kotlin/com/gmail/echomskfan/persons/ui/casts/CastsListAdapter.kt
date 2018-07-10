@@ -71,7 +71,7 @@ class CastsListAdapter(private val context: Context, private val presenter: Cast
                 if (!item.mp3Url.isEmpty()) {
                     itemView.item_content_audio_duration_text_view.text = StringUtils.getAudioDuration(item.mp3Duration)
                     itemView.item_content_audio_play_image_button.setOnClickListener {
-                        // presenter.play !
+                        presenter.play(item)
                     }
 
                     itemView.item_content_audio_layout.makeVisible()

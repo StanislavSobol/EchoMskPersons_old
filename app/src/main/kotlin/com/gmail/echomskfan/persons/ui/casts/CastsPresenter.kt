@@ -89,4 +89,8 @@ class CastsPresenter : BasePresenter<ICastsView>() {
         pageNum++
         loadCastsFromDb()
     }
+
+    fun play(item: CastVM) {
+viewState.play(item)
+    }
 }

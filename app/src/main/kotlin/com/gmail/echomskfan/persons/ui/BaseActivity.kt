@@ -1,11 +1,11 @@
 package com.gmail.echomskfan.persons.ui
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.arellomobile.mvp.MvpAppCompatActivity
 import com.gmail.echomskfan.persons.R
 
-abstract class BaseActivity<out T : BaseMvpFragment> : AppCompatActivity() {
+abstract class BaseActivity<out T : BaseMvpFragment> : MvpAppCompatActivity() {
 
     private val FRAGMENT_TAG = "FRAGMENT_TAG"
     private lateinit var fragment: T

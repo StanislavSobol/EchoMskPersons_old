@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.gmail.echomskfan.persons.MainActivity
 import com.gmail.echomskfan.persons.data.CastVM
 import com.gmail.echomskfan.persons.ui.BaseRecyclerViewMvpFragment
 import com.gmail.echomskfan.persons.utils.withArguments
@@ -35,6 +36,12 @@ class CastsFragment : BaseRecyclerViewMvpFragment(), ICastsView {
 
     override fun removeListProgressBar() {
         adapter.removeProgressBar()
+    }
+
+    override fun play(item: CastVM) {
+        if (activity is MainActivity) {
+            (activity as MainActivity).play(item)
+        }
     }
 
     companion object {

@@ -20,6 +20,15 @@ data class ItemDTO(
         @ColumnInfo(name = FIELD_ORDER_WITHIN_PAGE) var orderWithinPage: Int = 0,
         @ColumnInfo(name = FIELD_FAV, index = true) var fav: Boolean = false
 ) {
+
+    fun getTypeSubtype(): String {
+        var result = type
+        if (!subtype.isEmpty()) {
+            result += " / $subtype"
+        }
+        return result
+    }
+
     companion object {
         const val TABLE = "casts"
         const val FIELD_FULL_TEXT_URL = "full_text_url"
