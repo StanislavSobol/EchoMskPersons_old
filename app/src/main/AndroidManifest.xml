@@ -25,6 +25,8 @@
             android:name=".service.mediaplayer.MediaPlayerService"
             android:enabled="true"
             android:exported="false" />
+
+        <receiver android:name=".service.mediaplayer.MediaPlayerService$NotificationPlayButtonHandler" />
     </application>
 
 </manifest>

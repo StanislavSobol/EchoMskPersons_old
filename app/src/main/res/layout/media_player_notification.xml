@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimary"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/notificationButtonPlay"
+        android:background="@drawable/ic_baseline_play_arrow_24px"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <Button
+        android:background="@drawable/ic_baseline_pause_24px"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+</LinearLayout>

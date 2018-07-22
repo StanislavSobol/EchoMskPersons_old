@@ -73,6 +73,8 @@ class MainActivity : BaseActivity<VipsFragment>(), IMainView {
         if (intent.action == null) {
             bindService(mediaPlayerServiceIntent, mediaPlayerServiceConnection, BIND_AUTO_CREATE)
         }
+
+
     }
 
     fun trackMediaPlayer() {
