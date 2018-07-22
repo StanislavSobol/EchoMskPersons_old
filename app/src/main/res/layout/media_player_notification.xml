@@ -6,12 +6,13 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/notificationButtonPlay"
+        android:id="@+id/notificationPlayButton"
         android:background="@drawable/ic_baseline_play_arrow_24px"
         android:layout_width="50dp"
         android:layout_height="50dp" />
 
     <Button
+        android:id="@+id/notificationPauseButton"
         android:background="@drawable/ic_baseline_pause_24px"
         android:layout_width="50dp"
         android:layout_height="50dp" />

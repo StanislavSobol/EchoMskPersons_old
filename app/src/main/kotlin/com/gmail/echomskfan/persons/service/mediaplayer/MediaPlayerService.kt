@@ -6,8 +6,10 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Binder
+import android.support.annotation.IdRes
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
@@ -30,6 +32,28 @@ class MediaPlayerService : Service() {
 
     private var mediaPlayer: MediaPlayer? = null
     private var trackTread: Thread? = null
+
+    private var actionsBroadCastReseiver: BroadcastReceiver? = null
+
+    override fun onCreate() {
+        super.onCreate()
+
+        val filter = IntentFilter()
+        filter.addAction(PLAY_ACTION)
+        filter.addAction(PAUSE_ACTION)
+
+        actionsBroadCastReseiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                Log.d("SSS", "actionsBroadCastReseiver  onReceive ${intent!!.action}")
+            }
+        }
+        registerReceiver(actionsBroadCastReseiver, filter)
+    }
+
+    override fun onDestroy() {
+        actionsBroadCastReseiver?.let { unregisterReceiver(it) }
+        super.onDestroy()
+    }
 
     override fun onBind(p0: Intent?) = MediaServiceBinder()
 
@@ -82,14 +106,8 @@ class MediaPlayerService : Service() {
 
             val notificationView = RemoteViews(this.packageName, R.layout.media_player_notification)
 
-            // And now, building and attaching the Play button.
-//            notificationView.setOnClickPendingIntent(R.id.notificationButtonPlay)
-
-            val buttonPlayIntent = Intent(this, NotificationPlayButtonHandler::class.java)
-            buttonPlayIntent.putExtra("action", "togglePause")
-
-            val buttonPlayPendingIntent = PendingIntent.getBroadcast(this, 0, buttonPlayIntent, 0)
-            notificationView.setOnClickPendingIntent(R.id.notificationButtonPlay, buttonPlayPendingIntent)
+            bindButton(R.id.notificationPlayButton, Intent(this, NotificationPlayButtonHandler::class.java), notificationView)
+            bindButton(R.id.notificationPauseButton, Intent(this, NotificationPauseButtonHandler::class.java), notificationView)
 
             val notificationBuilder = NotificationCompat.Builder(applicationContext)
                     .setSmallIcon(R.drawable.ic_baseline_play_arrow_24px)
@@ -105,6 +123,11 @@ class MediaPlayerService : Service() {
                     applicationContext.getString(R.string.notification_ticket)
             startForeground(NOTIFICATION_ID, notification)
         }
+    }
+
+    private fun bindButton(@IdRes resId: Int, intent: Intent, notificationView: RemoteViews) {
+        val buttonPlayPendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        notificationView.setOnClickPendingIntent(resId, buttonPlayPendingIntent)
     }
 
     private fun startTracking() {
@@ -157,18 +180,47 @@ class MediaPlayerService : Service() {
     }
 
     inner class MediaServiceBinder : Binder() {
-
         val service: MediaPlayerService
             get() = this@MediaPlayerService
     }
 
-    /**
-     * Called when user clicks the "play/pause" button on the on-going system Notification.
-     */
     class NotificationPlayButtonHandler : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Toast.makeText(context, "Play Clicked", Toast.LENGTH_SHORT).show()
-            Log.d("SSS", "PLAY! ")
+            MediaPlayerService.sendActionBroadCast(context, PLAY_ACTION)
+//            val serviceIntent = Intent()
+//            serviceIntent.action = PLAY_ACTION
+//            context.sendBroadcast(serviceIntent)
         }
+    }
+
+    class NotificationPauseButtonHandler : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Toast.makeText(context, "Pause Clicked", Toast.LENGTH_SHORT).show()
+            MediaPlayerService.sendActionBroadCast(context, PAUSE_ACTION)
+
+//            val serviceIntent = Intent()
+//            serviceIntent.action = PLAY_ACTION
+//            context.sendBroadcast(serviceIntent)
+
+
+            //      context.sendBroadcast(MediaPlayerService.createActionBroadCast(PLAY_ACTION))
+//            val extra = intent.getIntExtra(MediaPlayerService.BUTTON_EXTRA, 0)
+//            Log.d("SSS", "PAUSE! $extra")
+        }
+    }
+
+    companion object {
+
+        fun sendActionBroadCast(context: Context, action: String) {
+            val serviceIntent = Intent()
+            serviceIntent.action = action
+            context.sendBroadcast(serviceIntent)
+        }
+
+        const val PLAY_ACTION = "PLAY_ACTION"
+        const val PAUSE_ACTION = "PAUSE_ACTION"
+
+
     }
 }
