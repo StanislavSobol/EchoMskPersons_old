@@ -1,6 +1,7 @@
 package com.gmail.echomskfan.persons.service.mediaplayer
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -13,11 +14,15 @@ import android.support.annotation.IdRes
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
-import android.widget.Toast
 import com.gmail.echomskfan.persons.MainActivity
 import com.gmail.echomskfan.persons.R
 import com.gmail.echomskfan.persons.data.CastVM
+import com.gmail.echomskfan.persons.utils.StringUtils
+import com.gmail.echomskfan.persons.utils.fromComputationToMain
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 
 //http://blog.nkdroidsolutions.com/android-foreground-service-example-tutorial/
@@ -31,9 +36,9 @@ class MediaPlayerService : Service() {
     var parentActivity: MainActivity? = null
 
     private var mediaPlayer: MediaPlayer? = null
-    private var trackTread: Thread? = null
-
-    private var actionsBroadCastReseiver: BroadcastReceiver? = null
+    //    private var trackTread: Thread? = null
+    private var intervalDisposable: Disposable? = null
+    private var actionsBroadCastReceiver: BroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -42,16 +47,26 @@ class MediaPlayerService : Service() {
         filter.addAction(PLAY_ACTION)
         filter.addAction(PAUSE_ACTION)
 
-        actionsBroadCastReseiver = object : BroadcastReceiver() {
+        actionsBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.action.let {
+                    when (it) {
+                        PLAY_ACTION -> resume() //playingItem?.let { play(it) }
+                        PAUSE_ACTION -> pause()
+                        else -> {
+
+                        }
+                    }
+                }
                 Log.d("SSS", "actionsBroadCastReseiver  onReceive ${intent!!.action}")
             }
         }
-        registerReceiver(actionsBroadCastReseiver, filter)
+        registerReceiver(actionsBroadCastReceiver, filter)
     }
 
     override fun onDestroy() {
-        actionsBroadCastReseiver?.let { unregisterReceiver(it) }
+        actionsBroadCastReceiver?.let { unregisterReceiver(it) }
+        intervalDisposable?.run { dispose() }
         super.onDestroy()
     }
 
@@ -90,11 +105,13 @@ class MediaPlayerService : Service() {
     }
 
     fun stop() {
-        if (trackTread != null) {
-            trackTread?.interrupt()
-            trackTread = null
-        }
+        intervalDisposable?.run { dispose() }
     }
+
+    private var notificationView: RemoteViews? = null
+
+
+    private var notificationBuilder: NotificationCompat.Builder? = null
 
     private fun startForeground() {
         if (playingItem != null) {
@@ -104,12 +121,15 @@ class MediaPlayerService : Service() {
             val notificationIntent = Intent(this, MainActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
-            val notificationView = RemoteViews(this.packageName, R.layout.media_player_notification)
+            notificationView = RemoteViews(this.packageName, R.layout.media_player_notification)
 
-            bindButton(R.id.notificationPlayButton, Intent(this, NotificationPlayButtonHandler::class.java), notificationView)
-            bindButton(R.id.notificationPauseButton, Intent(this, NotificationPauseButtonHandler::class.java), notificationView)
+            notificationView?.setTextViewText(R.id.notificationDurationTextView, "SSSSSSSSS")
 
-            val notificationBuilder = NotificationCompat.Builder(applicationContext)
+
+            bindButton(R.id.notificationPlayButton, Intent(this, NotificationPlayButtonHandler::class.java), notificationView!!)
+            bindButton(R.id.notificationPauseButton, Intent(this, NotificationPauseButtonHandler::class.java), notificationView!!)
+
+            notificationBuilder = NotificationCompat.Builder(applicationContext)
                     .setSmallIcon(R.drawable.ic_baseline_play_arrow_24px)
                     .setContentTitle(appName)
                     .setContentText(playingItem?.formattedDate + " : " + playingItem?.getTypeSubtype()) // message preview
@@ -117,11 +137,12 @@ class MediaPlayerService : Service() {
                     .setAutoCancel(false)
                     .setContentIntent(pendingIntent)
 
-            val notification = notificationBuilder.build()
-            notification.flags = notification.flags or Notification.FLAG_ONGOING_EVENT
-            notification.tickerText = appName + " " +
-                    applicationContext.getString(R.string.notification_ticket)
-            startForeground(NOTIFICATION_ID, notification)
+            notificationBuilder?.build()?.let {
+                it.flags = it.flags or Notification.FLAG_ONGOING_EVENT
+                it.tickerText = appName + " " +
+                        applicationContext.getString(R.string.notification_ticket)
+                startForeground(NOTIFICATION_ID, it)
+            }
         }
     }
 
@@ -130,14 +151,37 @@ class MediaPlayerService : Service() {
         notificationView.setOnClickPendingIntent(resId, buttonPlayPendingIntent)
     }
 
+    private fun updateNotification() {
+        val mNotificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        mNotificationManager.notify(NOTIFICATION_ID, notificationBuilder?.build())
+    }
+
+//    private fun updateNotification() {
+//        val mNotificationManager: NotificationManager =
+//                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
+//    }
+
     private fun startTracking() {
-        trackTread = Thread(Runnable {
-            try {
-                while (!Thread.currentThread().isInterrupted) {
+        intervalDisposable?.run { dispose() }
+
+        intervalDisposable = Observable.interval(1, TimeUnit.SECONDS)
+                .fromComputationToMain()
+                .subscribe({
                     if (parentActivity == null || mediaPlayer == null) {
-                        break
+                        intervalDisposable?.dispose()
+                        return@subscribe
                     }
+
                     parentActivity?.trackMediaPlayer()
+
+                    val mCurrentPosition = getCurrentPosition().div(1000)
+                    notificationView?.setTextViewText(R.id.notificationDurationTextView, StringUtils.getAudioDuration(mCurrentPosition))
+                    Log.d("SSS", StringUtils.getAudioDuration(mCurrentPosition))
+//                    notificationView?.setTextViewText(R.id.notificationDurationTextView, it.toString())
+                    updateNotification()
 
                     val isPlaying: Boolean = try {
                         mediaPlayer?.isPlaying ?: false
@@ -148,17 +192,9 @@ class MediaPlayerService : Service() {
                     if (!isPlaying) {
                         stopForeground(true)
                         stopSelf()
-                        break
+                        intervalDisposable?.dispose()
                     }
-
-                    Thread.sleep(1000)
-                }
-
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
-        })
-        trackTread?.start()
+                })
     }
 
     fun getCurrentPosition() = mediaPlayer?.currentPosition ?: 0
@@ -186,41 +222,27 @@ class MediaPlayerService : Service() {
 
     class NotificationPlayButtonHandler : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Toast.makeText(context, "Play Clicked", Toast.LENGTH_SHORT).show()
             MediaPlayerService.sendActionBroadCast(context, PLAY_ACTION)
-//            val serviceIntent = Intent()
-//            serviceIntent.action = PLAY_ACTION
-//            context.sendBroadcast(serviceIntent)
         }
     }
 
     class NotificationPauseButtonHandler : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Toast.makeText(context, "Pause Clicked", Toast.LENGTH_SHORT).show()
             MediaPlayerService.sendActionBroadCast(context, PAUSE_ACTION)
-
-//            val serviceIntent = Intent()
-//            serviceIntent.action = PLAY_ACTION
-//            context.sendBroadcast(serviceIntent)
-
-
-            //      context.sendBroadcast(MediaPlayerService.createActionBroadCast(PLAY_ACTION))
-//            val extra = intent.getIntExtra(MediaPlayerService.BUTTON_EXTRA, 0)
-//            Log.d("SSS", "PAUSE! $extra")
         }
     }
 
     companion object {
+
+        const val PLAY_ACTION = "PLAY_ACTION"
+        const val PAUSE_ACTION = "PAUSE_ACTION"
 
         fun sendActionBroadCast(context: Context, action: String) {
             val serviceIntent = Intent()
             serviceIntent.action = action
             context.sendBroadcast(serviceIntent)
         }
-
-        const val PLAY_ACTION = "PLAY_ACTION"
-        const val PAUSE_ACTION = "PAUSE_ACTION"
-
-
     }
 }
+
+

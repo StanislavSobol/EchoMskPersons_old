@@ -81,7 +81,7 @@ class MainActivity : BaseActivity<VipsFragment>(), IMainView {
         if (mediaPlayerService != null) {
             this.playedItem = mediaPlayerService?.playingItem
             val mCurrentPosition = mediaPlayerService?.getCurrentPosition()?.div(1000)
-            runOnUiThread {
+            //   runOnUiThread {
                 if (mediaPlayerService != null) {
                     if (mediaPlayerService?.isPlaying() == true) {
                         audioDurationTextView.text = StringUtils.getAudioDuration(mCurrentPosition
@@ -98,7 +98,7 @@ class MainActivity : BaseActivity<VipsFragment>(), IMainView {
                         audioSeekBar.isEnabled = false
                     }
                 }
-            }
+            // }
         }
     }
 

@@ -15,9 +15,10 @@ fun Completable.fromIoToMain(): Completable {
     return subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 }
 
-//fun <T> Observable<T>.fromIoToMain(): Observable<T> {
-//    return subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//}
+
+fun <T> Observable<T>.fromComputationToMain(): Observable<T> {
+    return subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
+}
 
 fun <T> PublishSubject<T>.fromIoToMain(): Observable<T> {
     return subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
